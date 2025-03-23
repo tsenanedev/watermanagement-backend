@@ -1,3 +1,4 @@
 mati-app/
 tsenane/
 node_modules
+.env
