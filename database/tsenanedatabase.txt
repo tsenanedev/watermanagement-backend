@@ -7,3 +7,21 @@ ENTITIES
 5. provinces
 6. districts/locality
 
+NOTAS:
+1. EDIÇÃO DE LEITURA: MANTER A LEITURA ANTERIOR E CRIAR NOVA FACTURA COM DADOS ACTUALIZADO
+E A ANTERIOR FICA NO STATUS CANCELADO
+
+2. NO ACTO DE PGT, UMA FACT ESTA PRA 1PGT MAS VARIAS FACTURAS PODEM SER PGAS POR 1PGT
+3. CRIAR UMA TABELA (BILLING E PAYMENTBILLING) =>
+
+4. LAYERS QUE VÃO RECEBER OPERATORS' ID NAS TABELAS {
+	users => role,
+	readingManag => todas,
+	customers => totas,
+	reports => todas
+}
+
+5. Na tabela readings, tem que se criar dados para tbla billing
+
+
+
