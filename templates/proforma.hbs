@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <title>Factura</title>
+</head>
+
+<style>
+    body {
+        font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        padding: 20px;
+        color: #000000;
+    }
+
+    table {
+        width: 95%;
+    }
+
+    table tr th {
+        border: 1px solid #000000;
+        text-align: left;
+    }
+</style>
+
+<body>
+    <div class="row mb-0 mt-0">
+        <div class="col text-left">
+            <img src="http://localhost:5000/img/logo_12.2b7a27d2.jpeg" width="100%" height="90%" alt="TSENANE,LDA">
+        </div>
+        <div class="col-6">
+            <table class="table-sm mt-0">
+                <thead>
+                    <tr>
+                        <td class="text-right" colspan="4" style="font-size: 9pt;"><b>Factura Proforma Nº:
+                                21/SAAF/2022</b></td>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 9pt; border: 1px solid #000;">
+                    <tr>
+                        <td colspan=" 2">Exmo(s) Sr(s): <br>
+                            <b>{{ uppercase 'Leonel Zacarias Matsinhe' }}</b><br>
+                            Bairro: Muchai 2<br>
+                            Categoria de consumo: Doméstica
+                            <hr style="border-top: dotted 1px #000;" class="mt-0 mb-0" />
+                            Data de emissão: 18-01-2022<br>
+                            Data limite de pagamento: 03-02-2022
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <button class="btn btn-sm btn-success">Ola Mundo</button>
+</body>
+
+</html>

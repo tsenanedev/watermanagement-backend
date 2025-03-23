@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <title>Factura</title>
+</head>
+
+<style>
+    body {
+        font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        padding: 20px;
+        color: #000000;
+    }
+
+    table {
+        width: 95%;
+    }
+
+    table tr th {
+        border: 1px solid #000000;
+        text-align: left;
+    }
+</style>
+
+<body>
+
+    <div class="row mb-0 mt-0">
+        <div class="col text-left">
+            <img src="http://localhost:8080/img/logo_12.2b7a27d2.jpeg" width="100%" height="90%" alt="TSENANE,LDA">
+        </div>
+        <div class="col-6">
+            <table class="table-sm mt-0">
+                <thead>
+                    <tr>
+                        <td class="text-right" colspan="4" style="font-size: 9pt;"><b>Factura/Recibo Nº:
+                                {{ leituraActual.receiptNumber }}/SAF/{{ leituraActual.year }}</b></td>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 9pt; border: 1px solid #000;">
+                    <tr>
+                        <td colspan=" 2">Exmo(s) Sr(s): <br>
+                            <b>{{ uppercase cliente.name }} | Contador: {{ cliente.barcode }}</b><br>
+                            Bairro: {{ cliente.address }} <br>
+                            Categoria de consumo: {{ category }}
+                            <hr style="border-top: dotted 1px #000;" class="mt-0 mb-0" />
+                            Consumo do mês: {{ dateFormat leituraActual.consumptionPeriod "MMMM/Y" }}<br>
+                            Data de emissão: {{ leituraActual.dataEmissao }}<br>
+                            Data limite de pagamento: {{ leituraActual.dataLimite }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row" style="font-size: 9pt;">
+        <div class="col-12">
+            <table class="table-sm">
+                <thead>
+                    <tr>
+                        <td class="text-left" width="60%">Facturas por regularizar</td>
+                        <td class="text-left">Consumo do mês:
+                            {{ dateFormat leituraActual.consumptionPeriod "MMMM/Y" }}</td>
+                    </tr>
+                    <tr>
+                        <td>
+
+                            <table class="table-sm text-left" style="font-size: 8pt;">
+                                <thead>
+                                    <tr>
+                                        <th>Descrição</th>
+                                        <th>Data</th>
+                                        <th>Vencimento</th>
+                                        <th>Multa</th>
+                                        <th>Montante</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {{#each leituras as |leitura| }}
+                                    <tr>
+                                        <td>Factura nr: {{ leitura.billId }}</td>
+                                        <td>{{ leitura.createdAt }}</td>
+                                        <td>{{ leitura.dataLimite }}</td>
+                                        <td>{{ leitura.forfeit }}</td>
+                                        <td class="text-right">{{ leitura.total }}</td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                                {{#if debts}}
+                                <tbody>
+                                    {{#each debts as |debt| }}
+                                    <tr>
+                                        <td colspan="2">Multa factura nr: {{ debt.billId }}</td>
+                                        <td>{{ debt.createdAt }}</td>
+                                        <td colspan="2" class="text-right">{{ debt.amount }}</td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                                {{/if}}
+
+                            </table>
+                        </td>
+                        <td>
+                            <table class="table-sm text-center" style="font-size: 8pt;">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Anterior</th>
+                                        <th class="text-center">Actual</th>
+                                        <th class="text-center">Consumo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center">{{ leituraActual.last }} m <sup>3</sup></td>
+                                        <td class="text-center">{{ leituraActual.current }} m <sup>3</sup></td>
+                                        <td class="text-center">{{ leituraActual.consumption }} m <sup>3</sup></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-0" style="font-size: 8pt;">
+        <div class="col-12">
+            <table class="table-sm">
+                <thead style="font-size: 8pt;">
+                    <tr>
+                        <th width="40%">Descrição</th>
+                        <th>Consumo Facturado</th>
+                        <th>Preço/m<sup>3</sup></th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 8pt;">
+                    {{{ detalhesDaFactura }}}
+                </tbody>
+                <tbody style="border-top: 1px solid #000;">
+                    <!-- Detalhe de Totais IVA, SUbtotal e Total Geral -->
+                    <tr>
+
+                        <td rowspan="4">
+                            <!-- {{#if avisoCorte }}
+                                 <img src="http://localhost:5000/uploads/aviso_corte.jpg" alt="Aviso de corte" width="100px">
+                            <b class="text-center text-danger">Aviso de Corte</b>
+                            {{/if}} -->
+                        </td>
+                        <td colspan="2">Sub Total de Contas de Água </td>
+                        <td class="text-left">{{ facturas.subTotal }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Código IVA2 (12%)</td>
+                        <td class="text-left">{{ facturas.vat }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><b>Total Da Factura</b></td>
+                        <td class="text-left"><b>{{ facturas.total }} MZN</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><b>TOTAL A PAGAR</b></td>
+                        <td class="text-left"><b>{{ totalDaFactura }} MZN</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+     <div class="row mt-0" style="font-size: 8pt;">
+        <div class="col-12">
+            <b>DETALHES SOBRE MEIOS DE PAGAMENTOS</b><br>
+            <table class="table-sm">
+                <thead>
+                    <tr>
+                        <td>
+                            <b>M-PESA</b><br>
+                            <b>*150#</b> Tecla de chamada <br>
+                            6. Pagamentos <br>
+                            7. Digitar código de serviço: <b>901029</b> <br>
+                            Digitar Referência: <b>{{ cliente.barcode }}</b> <br>
+                            Digitar o Valor: <b>{{ totalDaFactura }} MZN</b> <br>
+                            Digitar o PIN M-pesa e confirmar a tranzação
+
+                        </td>
+                        <td colspan="2">
+                            <b>BCI</b><br>
+                            Titular: TSENANE, Lda<br>
+                            {{ empresa.bankAccount }} <br>
+                            {{ empresa.nib }} <br>
+                            <b>Google Play Store - TSENANE</b><br>
+                            Contacte +258863132801 ou loja.funhalouro@tsenane.co.mz para solicitar credenciais de acesso ao aplicativo.
+
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="4">
+                            <b>Informações:</b>
+                            <hr class="bg-dark mt-0 mb-0">
+                            <ol>
+                                <li>A falta de pagamento da presente factura dentro do prazo estabelecido resultará em:
+                                    <br>
+                                    a) Multa de 20% sobre o valor da factura;<br>
+                                    b) Corte de fornecimento de água;<br>
+                                    b1) A religação será feita mediante o pagamento da taxa de religação.
+                                </li>
+                                <li>A reclamação da factura só é aceite no prazo máximo de 15 dias antes do prazo do
+                                    pagamento: (Artigo 8, nr. 2 Contrato
+                                    de Adesão).</li>
+                                <li>Os comprovativos de pagamentos efectuados via Depósito Bancário devem ser
+                                    apresentados no escritório da TSENANE, LDA, em Funhalouro</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr style="font-size: 8pt; color: red">
+                        {{#if avisoCorte}}
+                        <td colspan="4">AVISO: Será feito o corte de água dos clientes com 2 (duas) ou mais facturas em atrazo. Regularize seus débitos e evite a suspenção de água.</td>
+                        {{/if}}
+                    </tr>
+                    <tr style="font-size: 7pt;">
+                        <td colspan="2">
+                            Documento Processado por Computador
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- <hr style="border-top: dotted 2px #000;" class="mt-0" /> -->
+
+    <div class="row mt-0 mb-0" style="border-top: dotted 2px #000;">
+        <div class="row mt-0">
+            <div class="col-3 text-left">
+                <img src="http://localhost:8080/img/logo.ff6fa381.jpeg" width="100%" height="80%" alt="TSENANE,LDA">
+                <br>
+            </div>
+            <div class="col-9 text-left">
+                <table class="table-sm mt-0" style="font-size: 8pt;">
+                    <thead>
+                        <tr>
+                            <td class="text-right" colspan="6">
+                                <b>Factura/Recibo Nº: {{ leituraActual.receiptNumber }}/SAF/{{ leituraActual.year }}</b>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6">
+                                Exmo(s) Sr(s):
+                                <b>{{ uppercase cliente.name }} * {{ cliente.barcode }}</b>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tbody style="font-size: 8pt; border: 1px solid #000;">
+                        <tr>
+                            <th>Consumo do mês</th>
+                            <th>Anterior</th>
+                            <th>Actual</th>
+                            <th>Consumo</th>
+                            <th>Data de emissão</th>
+                            <th>Data limite de pagamento</th>
+                        </tr>
+                        {{#each leituras as |leitura| }}
+                        <tr>
+                            <td>{{ leitura.createdAt }}</td>
+                            <td>{{ leitura.last }}</td>
+                            <td>{{ leitura.current }}</td>
+                            <td>{{ leitura.totalUnities }} m<sup>3</sup></td>
+                            <td>{{ leitura.dataEmissao }}</td>
+                            <td>{{ leitura.dataLimite }}</td>
+                        </tr>
+                        {{/each}}
+                        <tr>
+                            <td colspan="4"></td>
+                            <th colspan="2" class="text-center">TOTAL DA FACTURA:
+                                {{ totalDaFactura }} MZN </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

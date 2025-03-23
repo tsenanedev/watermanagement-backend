@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <title>Factura</title>
+</head>
+
+<style>
+    body {
+        font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
+        padding: 20px;
+        color: #000000;
+    }
+
+    table {
+        width: 90%;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+
+    th,
+    td {
+        font-size: 8pt;
+    }
+</style>
+
+<body>
+    <div class="row mb-0 mt-0">
+        <div class="col text-center">
+            <img src="http://localhost:5000/img/logo.ff6fa381.jpeg" width="120px" height="120px" alt="TSENANE,LDA">
+        </div>
+        <div class="col-6">
+            <table class="table-sm mt-0">
+                <tbody style="font-size: 10pt; border: 1px solid #000;">
+                    <tr>
+                        <td colspan=" 2">
+                            <b>RELATÓRIO COMERCIAL E FINANCEIRO</b><br>
+                            PERÍODO DE FACTURAÇÃO: {{ from }}<br>
+                            <hr style="border-top: dotted 1px #000;" class="mt-0 mb-0" />
+                            DATA DE IMPRESSÃO: {{ printedAt }}<br>
+                            ASSINATURA: _______________________________________
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mb-2 mt-2">
+        <div class="col-12">
+            <center>
+                <table class="table-sm" style="border: 1px solid #000;">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Fontanários</th>
+                            <th>Domésticos</th>
+                            <th>Municipal</th>
+                            <th>Público</th>
+                            <th>Comercial</th>
+                            <th>Industrial</th>
+                            <th>TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Número total de clientes existentes</td>
+                            <td class="text-right">{{ totalClientes.totalFont }}</td>
+                            <td class="text-right">{{ totalClientes.totalDom }}</td>
+                            <td class="text-right">{{ totalClientes.totalMunic }}</td>
+                            <td class="text-right">{{ totalClientes.totalPubl }}</td>
+                            <td class="text-right">{{ totalClientes.totalComer }}</td>
+                            <td class="text-right">{{ totalClientes.totalIndust }}</td>
+                            <td class="text-right"></td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>Número de clientes facturados</td>
+                            <td class="text-right">{{ totalFacturados.totalFont }}</td>
+                            <td class="text-right">{{ totalFacturados.totalDom }}</td>
+                            <td class="text-right">{{ totalFacturados.totalMunic }}</td>
+                            <td class="text-right">{{ totalFacturados.totalPubl }}</td>
+                            <td class="text-right">{{ totalFacturados.totalComer }}</td>
+                            <td class="text-right">{{ totalFacturados.totalIndust }}</td>
+                            <td class="text-right"></td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>Volume de água facturada (m <sup>3</sup>)</td>
+                            <td class="text-right">{{ aguaFacturada.totalFont }}</td>
+                            <td class="text-right">{{ aguaFacturada.totalDom }}</td>
+                            <td class="text-right">{{ aguaFacturada.totalMunic }}</td>
+                            <td class="text-right">{{ aguaFacturada.totalPubl }}</td>
+                            <td class="text-right">{{ aguaFacturada.totalComer }}</td>
+                            <td class="text-right">{{ aguaFacturada.totalIndust }}</td>
+                            <td class="text-right"></td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>Facturação sem IVA</td>
+                            <td class="text-right">{{ facturacaoSemIva.totalFont }}</td>
+                            <td class="text-right">{{ facturacaoSemIva.totalDom }}</td>
+                            <td class="text-right">{{ facturacaoSemIva.totalMunic }}</td>
+                            <td class="text-right">{{ facturacaoSemIva.totalPubl }}</td>
+                            <td class="text-right">{{ facturacaoSemIva.totalComer }}</td>
+                            <td class="text-right">{{ facturacaoSemIva.totalIndust }}</td>
+                            <td class="text-right"></td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>Taxas, outros serviços e multas</td>
+                            <td class="text-right">{{ taxasOutrosMultas.totalFont }}</td>
+                            <td class="text-right">{{ taxasOutrosMultas.totalDom }}</td>
+                            <td class="text-right">{{ taxasOutrosMultas.totalMunic }}</td>
+                            <td class="text-right">{{ taxasOutrosMultas.totalPubl }}</td>
+                            <td class="text-right">{{ taxasOutrosMultas.totalComer }}</td>
+                            <td class="text-right">{{ taxasOutrosMultas.totalIndust }}</td>
+                            <td class="text-right"></td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>Facturação com IVA</td>
+                            <td class="text-right">{{ facturacaoComIva.totalFont }}</td>
+                            <td class="text-right">{{ facturacaoComIva.totalDom }}</td>
+                            <td class="text-right">{{ facturacaoComIva.totalMunic }}</td>
+                            <td class="text-right">{{ facturacaoComIva.totalPubl }}</td>
+                            <td class="text-right">{{ facturacaoComIva.totalComer }}</td>
+                            <td class="text-right">{{ facturacaoComIva.totalIndust }}</td>
+                            <td class="text-right"></td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td><b>Total facturado</b></td>
+                            <td class="text-right">{{ totalFacturado.totalFont }}</td>
+                            <td class="text-right">{{ totalFacturado.totalDom }}</td>
+                            <td class="text-right">{{ totalFacturado.totalMunic }}</td>
+                            <td class="text-right">{{ totalFacturado.totalPubl }}</td>
+                            <td class="text-right">{{ totalFacturado.totalComer }}</td>
+                            <td class="text-right">{{ totalFacturado.totalIndust }}</td>
+                            <td class="text-right"></td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td><b>Valor recebido</b></td>
+                            <td class="text-right">{{ totalRecebido.totalFont }}</td>
+                            <td class="text-right">{{ totalRecebido.totalDom }}</td>
+                            <td class="text-right">{{ totalRecebido.totalMunic }}</td>
+                            <td class="text-right">{{ totalRecebido.totalPubl }}</td>
+                            <td class="text-right">{{ totalRecebido.totalComer }}</td>
+                            <td class="text-right">{{ totalRecebido.totalIndust }}</td>
+                            <td class="text-right"></td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td><b>Valor em dívida durante o mês</b></td>
+                            <td class="text-right">{{ dividaDuranteMes.totalFont }}</td>
+                            <td class="text-right">{{ dividaDuranteMes.totalDom }}</td>
+                            <td class="text-right">{{ dividaDuranteMes.totalMunic }}</td>
+                            <td class="text-right">{{ dividaDuranteMes.totalPubl }}</td>
+                            <td class="text-right">{{ dividaDuranteMes.totalComer }}</td>
+                            <td class="text-right">{{ dividaDuranteMes.totalIndust }}</td>
+                            <td class="text-right"></td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td colspan="5"><b>Total facturado durante o mês</b></td>
+                            <td colspan="3" class="text-right"><b>{{ totalFacturadoGeral }} Mzn</b></td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td colspan="5"><b>Total da dívida recuperada durante o mês</b></td>
+                            <td colspan="3" class="text-right"><b>{{ totalRecebidoGeral }} Mzn</b></td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <!-- 
+                            <tr>
+                            <td colspan="5"><b>Total da dívida durnate o mês</b></td>
+                            <td colspan="2" class="text-right"><b>{{ dividaDuranteMesGeral }} Mzn</b></td>
+                        </tr>
+                         -->
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <th colspan="8" class="text-center"><b>VALORES ACOMULADOS</b></th>
+                        </tr>
+                        <tr>
+                            <td colspan="5"><b>TOTAL FACTURADO ACOMULADO</b></td>
+                            <td colspan="3" class="text-right"><b>{{ totalFacturadoLifeCicle }} Mzn</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5"><b>TOTAL DE RECEBIMENTOS ACOMULADO</b></td>
+                            <td colspan="3" class="text-right"><b>{{ totalPagoGlobalFacturado }} Mzn</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5"><b>TOTAL EM DÍVIDA ACOMULADO</b></td>
+                            <td colspan="3" class="text-right"><b>{{ dividaGeralAcomulado }} Mzn</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </center>
+        </div>
+    </div>
+
+</body>
+
+</html>

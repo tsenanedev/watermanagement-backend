@@ -1,0 +1,9 @@
+ENTITIES
+1. users => regulators => operators =>
+
+2. regulators
+3. operators 
+4. system_supplier
+5. provinces
+6. districts/locality
+
