@@ -92,22 +92,23 @@ router.post("/", (req, res, next) => {
                 );
               }
               if (result) {
-                const response = [
-                  {
-                    id: rows[0].id,
-                    name: rows[0].name,
-                    code: rows[0].code,
-                    email: rows[0].email,
-                    phoneNumber: rows[0].phoneNumber,
-                    userRole: rows[0].userRole,
-                    status: rows[0].status,
-                    branchId: rows[0].branchId,
-                    uid: rows[0].uid,
-                    createdAt: rows[0].createdAt,
-                    companyId: rows[0].companyId,
-                  },
-                ];
-                res.send(JSON.stringify({ success: true, result: response }));
+                const response = {
+                  id: rows[0].id,
+                  name: rows[0].name,
+                  code: rows[0].code,
+                  email: rows[0].email,
+                  phoneNumber: rows[0].phoneNumber,
+                  userRole: rows[0].userRole,
+                  status: rows[0].status,
+                  branchId: rows[0].branchId,
+                  uid: rows[0].uid,
+                  createdAt: rows[0].createdAt,
+                  companyId: rows[0].companyId,
+                };
+                let token = jwt.sign({ uid: response }, SECRET_KEY, {}); // Sign Token
+                res.send(
+                  JSON.stringify({ success: true, user: response, token })
+                );
               } else {
                 res.send(
                   JSON.stringify({

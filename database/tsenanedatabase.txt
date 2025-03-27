@@ -21,6 +21,9 @@ E A ANTERIOR FICA NO STATUS CANCELADO
 	reports => todas
 }
 
+plataforma: web
+
+
 5. Na tabela readings, tem que se criar dados para tbla billing
 
 

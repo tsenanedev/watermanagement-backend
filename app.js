@@ -8,7 +8,7 @@ const morgan = require("morgan");
 const exphbs = require("express-handlebars");
 
 const app = express();
-const port = process.env.PORT || 3300;
+const port = process.env.PORT || 3000;
 
 // DB configuration
 config = require("./db");
