@@ -119,23 +119,14 @@ CREATE TABLE IF NOT EXISTS `watermanagement`.`readings` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `barcode` VARCHAR(25) NOT NULL,
   `receiptNumber` INT NOT NULL,
-  `uniqueBillId` VARCHAR(100) NOT NULL,
   `last` FLOAT NOT NULL DEFAULT '0',
   `current` FLOAT NULL DEFAULT '0',
   `consumption` FLOAT NOT NULL,
-  `forfeit` FLOAT NOT NULL,
-  `tarrifTypeId` INT NOT NULL,
-  `branchId` INT NOT NULL,
+  `system_supplier_id` INT NOT NULL,
   `month` INT NOT NULL,
   `year` INT NOT NULL,
   `takenAt` TEXT NOT NULL,
   `createdAt` TEXT NOT NULL,
-  `dataEmissao` VARCHAR(25) NULL DEFAULT NULL,
-  `dataLimite` VARCHAR(30) NULL DEFAULT NULL,
-  `subTotal` FLOAT NULL DEFAULT NULL,
-  `vat` FLOAT NULL DEFAULT NULL,
-  `totalOfBill` FLOAT NULL DEFAULT NULL,
-  `consumoFacturado` INT NULL DEFAULT '0',
   `consumptionPeriod` VARCHAR(25) NULL DEFAULT NULL,
   `staffName` VARCHAR(100) NULL DEFAULT NULL,
   `updatedBy` TEXT NULL DEFAULT NULL,
@@ -151,6 +142,39 @@ AUTO_INCREMENT = 96595
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
 
+-- -----------------------------------------------------
+-- Table `watermanagement`.`billing`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `watermanagement`.`billing` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  code  VARCHAR(100) NOT NULL,
+  `createdAt` DATE NOT NULL,
+  `readings_id` INT NOT NULL,
+  `tarrif_type_id` INT NOT NULL,\
+   `forfeit` FLOAT NOT NULL,
+  `tarrifTypeId` INT NOT NULL,
+  `dataEmissao` VARCHAR(25) NULL DEFAULT NULL,
+  `dataLimite` VARCHAR(30) NULL DEFAULT NULL,
+  `subTotal` FLOAT NULL DEFAULT NULL,
+  `vat` FLOAT NULL DEFAULT NULL,
+  `totalOfBill` FLOAT NULL DEFAULT NULL,
+  `staffName` VARCHAR(100) NULL DEFAULT NULL,
+   `consumoFacturado` INT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
+  INDEX `fk_billing_readings1_idx` (`readings_id` ASC) ,
+  INDEX `fk_billing_tarrif_type1_idx` (`tarrif_type_id` ASC) ,
+  CONSTRAINT `fk_billing_readings1`
+    FOREIGN KEY (`readings_id`)
+    REFERENCES `watermanagement`.`readings` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_billing_tarrif_type1`
+    FOREIGN KEY (`tarrif_type_id`)
+    REFERENCES `watermanagement`.`tarrif_type` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `watermanagement`.`tarrifs`
@@ -193,32 +217,6 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 8
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-
--- -----------------------------------------------------
--- Table `watermanagement`.`billing`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `watermanagement`.`billing` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `createdAt` DATE NOT NULL,
-  `readings_id` INT NOT NULL,
-  `tarrif_type_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
-  INDEX `fk_billing_readings1_idx` (`readings_id` ASC) ,
-  INDEX `fk_billing_tarrif_type1_idx` (`tarrif_type_id` ASC) ,
-  CONSTRAINT `fk_billing_readings1`
-    FOREIGN KEY (`readings_id`)
-    REFERENCES `watermanagement`.`readings` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_billing_tarrif_type1`
-    FOREIGN KEY (`tarrif_type_id`)
-    REFERENCES `watermanagement`.`tarrif_type` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `watermanagement`.`debts`
@@ -580,14 +578,10 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `watermanagement`.`users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `uid` TEXT NOT NULL,
-  `code` VARCHAR(15) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
   `phoneNumber` VARCHAR(20) NOT NULL,
   `password` TEXT NOT NULL,
   `email` VARCHAR(100) NOT NULL,
-  `userRole` INT NOT NULL,
-  `branchId` INT NOT NULL,
-  `companyId` INT NOT NULL,
   `status` INT NOT NULL,
   `createdAt` VARCHAR(255) NOT NULL,
   `token` TEXT NULL DEFAULT NULL,
