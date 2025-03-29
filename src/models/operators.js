@@ -9,6 +9,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      operators.hasMany(models.roles, {
+        foreignKey: "table_id",
+        constraints: false,
+        scope: {
+          table_name: "operators",
+        },
+        as: "roles", // Nome da associação
+      });
     }
   }
   operators.init(

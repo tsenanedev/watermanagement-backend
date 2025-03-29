@@ -9,6 +9,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      regulators.hasMany(models.roles, {
+        foreignKey: "table_id",
+        constraints: false,
+        scope: {
+          table_name: "regulators",
+        },
+        as: "roles", // Nome da associação
+      });
     }
   }
   regulators.init(
@@ -42,6 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "regulators",
       timestamps: true,
+
       hooks: {
         beforeValidate: (regulator) => {
           // Gera o código AUTOMATICAMENTE (se não existir)

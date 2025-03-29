@@ -15,7 +15,23 @@ async function login(req, res) {
           [Op.or]: [{ email: email }, { phoneNumber: email }],
           status: 1, // Verifica se o usuário está ativo
         },
-        include: "roles",
+        include: [
+          {
+            association: "roles",
+            include: [
+              {
+                association: "regulators",
+                required: false, // Não é obrigatório ter um regulador
+                where: { "$roles.table_name$": "regulators" }, // Filtro para reguladores
+              },
+              {
+                association: "operators",
+                required: false, // Não é obrigatório ter um operador
+                where: { "$roles.table_name$": "operators" }, // Filtro para operadores
+              },
+            ],
+          },
+        ],
       });
 
       if (user) {
@@ -35,7 +51,6 @@ async function login(req, res) {
             code: user.code,
             email: user.email,
             phoneNumber: user.phoneNumber,
-
             status: user.status,
             branchId: user.branchId,
             uid: user.uid,
@@ -45,7 +60,7 @@ async function login(req, res) {
           };
 
           // Gerar o token JWT
-          let token = jwt.sign({ uid: response.uid }, SECRET_KEY, {
+          let token = jwt.sign({ uid: user }, SECRET_KEY, {
             expiresIn: "1h",
           });
 
