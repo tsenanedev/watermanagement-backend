@@ -299,10 +299,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `watermanagement`.`roles` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `role` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
   `createdA` DATE NOT NULL,
-  `tableName` VARCHAR(45) NOT NULL,
-  `tableId` INT NOT NULL,
+  `table_name` VARCHAR(45) NOT NULL,
+  table_name VARCHAR(45) NOT NULL
+  `table_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `idaccessLevel_UNIQUE` (`id` ASC) )
 ENGINE = InnoDB;
@@ -583,9 +584,10 @@ CREATE TABLE IF NOT EXISTS `watermanagement`.`users` (
   `password` TEXT NOT NULL,
   `email` VARCHAR(100) NOT NULL,
   `status` INT NOT NULL,
-  `createdAt` VARCHAR(255) NOT NULL,
+  `createdAt`timestamp NOT NULL,
+  
   `token` TEXT NULL DEFAULT NULL,
-  `roles_id` INT NOT NULL,
+  `role_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `phoneNumber` (`phoneNumber` ASC) ,
   UNIQUE INDEX `email` (`email` ASC) ,

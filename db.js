@@ -2,9 +2,9 @@ const config = {
   database: {
     host: "localhost",
     user: "root",
-    password: "M#rci#2002",
+    password: "",
     port: 3306,
-    db: "tsenane",
+    db: "watermanagement",
   },
 };
 
