@@ -2,8 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 // Importar todas as rotas
-const jwtToken = require("./jwtController");
+const regulatorsController = require("../../src/Controllers/regulatorsController");
+const operatorsControllers = require("../../src/Controllers/operatorsControllers");
 const authController = require("../../src/Controllers/authController");
+
+const jwtToken = require("./jwtController");
+
 const users = require("./users");
 const company = require("./companies");
 const customer = require("./customer");
@@ -50,8 +54,22 @@ const pgfGenerator = require("./pdf_generator");
 // Registrar todas as rotas com seus respectivos prefixos
 router.use("/jwt", jwtToken);
 router.use("/users", users);
+// CRUD regulators
+router.post("/regulators", regulatorsController.create);
+router.get("/regulators", regulatorsController.findAll);
+router.get("/regulators/:id", regulatorsController.findOne);
+router.put("/regulators/:id", regulatorsController.update);
+router.delete("/regulators/:id", regulatorsController.delete);
+// CRUD regulators
+router.post("/operators", operatorsControllers.create);
+router.get("/operators", operatorsControllers.findAll);
+router.get("/operators/:id", operatorsControllers.findOne);
+router.put("/operators/:id", operatorsControllers.update);
+router.delete("/operators/:id", operatorsControllers.delete);
+//login user
 router.post("/userLogin", authController.login);
-router.post("users/chenge/pass", authController.updatePassword);
+router.post("/users/chenge/pass", authController.updatePassword);
+
 // router.use("/user_login", user_login);
 router.use("/companies", company);
 router.use("/customers", customer);

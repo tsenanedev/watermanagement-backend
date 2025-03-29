@@ -60,6 +60,9 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `watermanagement`.`operators` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
+  deletedAt timestamp NOT NULL,
+  createdAt timestamp NOT NULL,
+  deletedAt	timestamp NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -347,15 +350,14 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `watermanagement`.`regulators` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `operators_id` INT NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `code` VARCHAR(45) NOT NULL,
+  `createdAt`timestamp NOT NULL,
+  `updatedAt`timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `idregulators_UNIQUE` (`id` ASC) ,
-  INDEX `fk_regulators_operators1_idx` (`operators_id` ASC) ,
-  CONSTRAINT `fk_regulators_operators1`
-    FOREIGN KEY (`operators_id`)
-    REFERENCES `watermanagement`.`operators` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+,
+ )
 ENGINE = InnoDB;
 
 USE `watermanagement` ;
@@ -369,6 +371,7 @@ CREATE TABLE IF NOT EXISTS `watermanagement`.`neighbourhoods` (
   `districtId` INT NOT NULL,
   `name` VARCHAR(100) NOT NULL,
   `createdAt` VARCHAR(255) NOT NULL,
+  `updatedAt`timestamp NOT NULL,
   `districts_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_branches_districts_idx` (`districts_id` ASC) ,
@@ -585,7 +588,7 @@ CREATE TABLE IF NOT EXISTS `watermanagement`.`users` (
   `email` VARCHAR(100) NOT NULL,
   `status` INT NOT NULL,
   `createdAt`timestamp NOT NULL,
-  
+  `createdAt`timestamp NOT NULL,
   `token` TEXT NULL DEFAULT NULL,
   `role_id` INT NOT NULL,
   PRIMARY KEY (`id`),

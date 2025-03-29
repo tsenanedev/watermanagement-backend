@@ -3,7 +3,6 @@ const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 var SECRET_KEY = "leonelMatsinheRestFullApiFOrMatiAppWeb1865375hdyt";
-db = require("../models");
 
 async function login(req, res) {
   const { email, password } = req.body;
@@ -124,11 +123,21 @@ async function updatePassword(req, res) {
                 })
               );
             })
-            .catch((err) => {
+            .catch((error) => {
               res
                 .status(500)
-                .send(JSON.stringify({ success: false, message: err.message }));
+                .send(
+                  JSON.stringify({ success: false, message: error.message })
+                );
             });
+          logger.error({
+            message:
+              error.errors?.map((e) => e.message).join(" | ") || error.message,
+            stack: error.stack,
+            sql: error.sql, // Query SQL (se existir)
+            parameters: error.parameters, // Parâmetros (se existirem)
+            timestamp: new Date(),
+          });
         });
       })
       .catch((err) => {
