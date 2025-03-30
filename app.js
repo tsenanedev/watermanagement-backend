@@ -10,7 +10,7 @@ const routes = require("./routes/api");
 const app = express();
 const port = process.env.PORT || 3000;
 // globals.js
-const logger = require("./logger"); // Importa o logger
+const logger = require("./config/logger"); // Importa o logger
 global.logger = logger; // Define a variável global
 
 // DB configuration

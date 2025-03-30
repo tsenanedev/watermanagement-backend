@@ -25,9 +25,9 @@ async function login(req, res) {
                 where: { "$roles.table_name$": "regulators" }, // Filtro para reguladores
               },
               {
-                association: "operators",
+                association: "system_suppliers",
                 required: false, // Não é obrigatório ter um operador
-                where: { "$roles.table_name$": "operators" }, // Filtro para operadores
+                where: { "$roles.table_name$": "system_suppliers" }, // Filtro para operadores
               },
             ],
           },

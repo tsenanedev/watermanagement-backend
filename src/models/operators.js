@@ -9,13 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      operators.hasMany(models.roles, {
-        foreignKey: "table_id",
-        constraints: false,
-        scope: {
-          table_name: "operators",
-        },
-        as: "roles", // Nome da associação
+
+      operators.hasMany(models.system_suppliers, {
+        foreignKey: "operator_id",
+        as: "system_suppliers", // Nome da associação
       });
     }
   }
@@ -50,6 +47,19 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "operators",
       paranoid: true,
+      hooks: {
+        beforeValidate: (regulator) => {
+          // Gera o código AUTOMATICAMENTE (se não existir)
+          if (!regulator.code) {
+            const prefix = regulator.name
+              .substring(0, 3)
+              .toUpperCase()
+              .replace(/\s+/g, ""); // Remove espaços (ex: "ANV ISA" → "ANV")
+            const randomNum = Math.floor(1000 + Math.random() * 9000); // 1000-9999
+            regulator.code = `${prefix}-${randomNum}`;
+          }
+        },
+      },
     }
   );
   return operators;
