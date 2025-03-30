@@ -21,7 +21,7 @@ module.exports = {
       phoneNumber: {
         type: Sequelize.STRING
       },
-      role_id: {
+      roles_id: {
         type: Sequelize.INTEGER
       },
       status: {

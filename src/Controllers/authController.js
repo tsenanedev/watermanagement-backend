@@ -36,7 +36,6 @@ async function login(req, res) {
             code: user.code,
             email: user.email,
             phoneNumber: user.phoneNumber,
-
             status: user.status,
             branchId: user.branchId,
             uid: user.uid,
@@ -53,7 +52,7 @@ async function login(req, res) {
           // Retornar resposta com sucesso e o token
           return res.status(200).json({
             success: true,
-            user: response,
+            user,
             token,
           });
         });
