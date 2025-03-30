@@ -62,3 +62,13 @@ Desfazer todos os seeders:
 ```sh
 npx sequelize-cli db:seed:undo:all
 ```
+
+## Endpoints: regulators
+
+GET /regulators → Listar todos
+
+GET /regulators/1 → Buscar por ID
+
+PUT /regulators/1 → Atualizar
+
+DELETE /regulators/1 → Deletar

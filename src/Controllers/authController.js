@@ -3,7 +3,6 @@ const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 var SECRET_KEY = "leonelMatsinheRestFullApiFOrMatiAppWeb1865375hdyt";
-db = require("../models");
 
 async function login(req, res) {
   const { email, password } = req.body;
@@ -16,7 +15,23 @@ async function login(req, res) {
           [Op.or]: [{ email: email }, { phoneNumber: email }],
           status: 1, // Verifica se o usuário está ativo
         },
-        include: "roles",
+        include: [
+          {
+            association: "roles",
+            include: [
+              {
+                association: "regulators",
+                required: false, // Não é obrigatório ter um regulador
+                where: { "$roles.table_name$": "regulators" }, // Filtro para reguladores
+              },
+              {
+                association: "operators",
+                required: false, // Não é obrigatório ter um operador
+                where: { "$roles.table_name$": "operators" }, // Filtro para operadores
+              },
+            ],
+          },
+        ],
       });
 
       if (user) {
@@ -45,7 +60,7 @@ async function login(req, res) {
           };
 
           // Gerar o token JWT
-          let token = jwt.sign({ uid: response.uid }, SECRET_KEY, {
+          let token = jwt.sign({ uid: user }, SECRET_KEY, {
             expiresIn: "1h",
           });
 
@@ -123,11 +138,21 @@ async function updatePassword(req, res) {
                 })
               );
             })
-            .catch((err) => {
+            .catch((error) => {
               res
                 .status(500)
-                .send(JSON.stringify({ success: false, message: err.message }));
+                .send(
+                  JSON.stringify({ success: false, message: error.message })
+                );
             });
+          logger.error({
+            message:
+              error.errors?.map((e) => e.message).join(" | ") || error.message,
+            stack: error.stack,
+            sql: error.sql, // Query SQL (se existir)
+            parameters: error.parameters, // Parâmetros (se existirem)
+            timestamp: new Date(),
+          });
         });
       })
       .catch((err) => {

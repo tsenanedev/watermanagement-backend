@@ -11,6 +11,20 @@ module.exports = (sequelize, DataTypes) => {
       roles.hasMany(models.users, {
         foreignKey: "role_id", // Chave estrangeira que liga Roles a Users
       });
+      roles.belongsTo(models.regulators, {
+        foreignKey: "table_id",
+        constraints: false, // Removemos a restrição para suportar múltiplas tabelas
+        // scope: {
+        //   table_name: "regulators",
+        // },
+        as: "regulators",
+      });
+      roles.belongsTo(models.operators, {
+        foreignKey: "table_id",
+        constraints: false,
+        // scope: { table_name: "operators" },
+        as: "operators",
+      });
     }
   }
   roles.init(
@@ -22,7 +36,10 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "roles",
+      // paranoid: true,
+      timestamps: true,
     }
   );
+
   return roles;
 };
