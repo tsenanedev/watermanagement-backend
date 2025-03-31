@@ -38,7 +38,7 @@ async function login(req, res) {
         // Comparar a senha fornecida com a senha armazenada
         bcrypt.compare(password, user.password, (err, result) => {
           if (err || !result) {
-            return res.status(400).json({
+            return res.status(200).json({
               success: false,
               message: "A senha que digitou está incorreta.",
             });
