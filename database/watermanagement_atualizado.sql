@@ -2554,6 +2554,8 @@ CREATE TABLE `districts` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `provinceId` int(11) NOT NULL
+    createdAt timestamp  NULL DEFAULT,
+  updatedAt timestamp  NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -14989,7 +14991,9 @@ INSERT INTO `proforma` (`id`, `invoiceId`, `preRegistrationId`, `customerName`, 
 
 CREATE TABLE `provinces` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL
+  `name` varchar(50) NOT NULL, 
+    createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -15035,7 +15039,8 @@ CREATE TABLE `readings` (
   `waterMeterImageUrl` text DEFAULT NULL,
   `lat` varchar(45) DEFAULT NULL,
   `lng` varchar(45) DEFAULT NULL
-  createdAt timestamp NOT NULL DEFAULT
+     createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15046,7 +15051,9 @@ CREATE TABLE `readings` (
 
 CREATE TABLE `regulators` (
   `id` int(11) NOT NULL,
-  `operators_id` int(11) NOT NULL
+  `name` varchar(45) NOT NULL,
+    createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15090,7 +15097,9 @@ CREATE TABLE `roles` (
   `role` varchar(45) NOT NULL,
   `createdA` date NOT NULL,
   `tableName` varchar(45) NOT NULL,
-  `tableId` int(11) NOT NULL
+  `table_id` int(11) NOT NULL,
+    createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
