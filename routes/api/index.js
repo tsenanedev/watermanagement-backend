@@ -68,6 +68,7 @@ router.put("/operators/:id", operatorsControllers.update);
 router.delete("/operators/:id", operatorsControllers.delete);
 //login user
 router.post("/userLogin", authController.login);
+router.get("/checkToken", authController.checkToken);
 router.post("/users/chenge/pass", authController.updatePassword);
 
 // router.use("/user_login", user_login);

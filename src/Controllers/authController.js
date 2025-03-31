@@ -60,7 +60,7 @@ async function login(req, res) {
           };
 
           // Gerar o token JWT
-          let token = jwt.sign({ uid: user }, SECRET_KEY, {
+          let token = jwt.sign({ uid: response }, SECRET_KEY, {
             expiresIn: "1h",
           });
 
@@ -199,7 +199,22 @@ async function updatePassword(req, res) {
   }
 }
 
+async function checkToken(req, res) {
+  var authorization = req.headers.authorization,
+    decoded;
+
+  try {
+    decoded = jwt.verify(authorization.split(" ")[1], SECRET_KEY);
+  } catch (e) {
+    return res.status(401).send({success: false, message: e});
+  }
+  const uid = decoded.uid;
+
+  res.send(JSON.stringify({ success: true, message: uid }));
+}
+
 module.exports = {
   login,
   updatePassword,
+  checkToken,
 };

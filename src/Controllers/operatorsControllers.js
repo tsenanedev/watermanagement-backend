@@ -48,7 +48,7 @@ exports.update = async (req, res) => {
 // Listar todos os Operatores
 exports.findAll = async (req, res) => {
   try {
-    const alloperator = await operator.findAll();
+    const alloperator = await operators.findAll();
 
     res.json(alloperator);
   } catch (error) {
