@@ -60,14 +60,14 @@ async function login(req, res) {
           };
 
           // Gerar o token JWT
-          let token = jwt.sign({ uid: user }, SECRET_KEY, {
+          let token = jwt.sign({ uid: response }, SECRET_KEY, {
             expiresIn: "1h",
           });
 
           // Retornar resposta com sucesso e o token
           return res.status(200).json({
             success: true,
-            user: response,
+            user,
             token,
           });
         });
@@ -77,8 +77,16 @@ async function login(req, res) {
           message: "O E-mail ou Celular que digitou não encontra-se registado.",
         });
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      logger.error({
+        message:
+          error.errors?.map((e) => e.message).join(" | ") || error.message,
+        stack: error.stack,
+        sql: error.sql,
+        parameters: error.parameters,
+        timestamp: new Date(),
+      });
+      console.error(error);
       return res.status(500).json({
         success: false,
         message: "Erro no servidor.",
@@ -139,11 +147,12 @@ async function updatePassword(req, res) {
               );
             })
             .catch((error) => {
-              res
-                .status(500)
-                .send(
-                  JSON.stringify({ success: false, message: error.message })
-                );
+              res.status(500).send(
+                JSON.stringify({
+                  success: false,
+                  message: "Erro no servidor.",
+                })
+              );
             });
           logger.error({
             message:
@@ -160,46 +169,27 @@ async function updatePassword(req, res) {
           .status(500)
           .send(JSON.stringify({ success: false, message: err.message }));
       });
-    // req.getConnection(function (err, conn) {
-    //   if (err) {
-    //     res.status(500).send(JSON.stringify({ success: false, message: err }));
-    //   } else {
-    //     bcrypt.hash(code, 10, (errBcrypt, hash) => {
-    //       if (errBcrypt) {
-    //         res.status(500);
-    //         res.send(JSON.stringify({ success: false, message: errBcrypt }));
-    //       } else {
-    //         conn.query(
-    //           "UPDATE users SET code=?, password=? WHERE id=?",
-    //           [code, hash, id],
-    //           function (err, rows, fields) {
-    //             if (err) {
-    //               res.status(500);
-    //               res.send(
-    //                 JSON.stringify({ success: false, message: err.message })
-    //               );
-    //             } else {
-    //               if (rows.affectedRows > 0) {
-    //                 res.send(
-    //                   JSON.stringify({
-    //                     success: true,
-    //                     message: "Senha actualizada com sucesso",
-    //                   })
-    //                 );
-    //               }
-    //             }
-    //           }
-    //         );
-    //       }
-    //     });
-    //   }
-    // });
   } else {
     res.send(JSON.stringify({ success: false, message: "Invalid userId" }));
   }
 }
 
+async function checkToken(req, res) {
+  var authorization = req.headers.authorization,
+    decoded;
+
+  try {
+    decoded = jwt.verify(authorization.split(" ")[1], SECRET_KEY);
+  } catch (e) {
+    return res.status(401).send({ success: false, message: e });
+  }
+  const uid = decoded.uid;
+
+  res.send(JSON.stringify({ success: true, message: uid }));
+}
+
 module.exports = {
   login,
   updatePassword,
+  checkToken,
 };

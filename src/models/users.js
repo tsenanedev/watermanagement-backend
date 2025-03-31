@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       role_id: DataTypes.INTEGER,
       status: DataTypes.STRING,
       token: DataTypes.STRING,
+      updatedAt: DataTypes.STRING,
     },
     {
       sequelize,

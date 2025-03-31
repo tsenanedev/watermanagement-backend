@@ -7,6 +7,7 @@ const operatorsControllers = require("../../src/Controllers/operatorsController"
 const provincesController = require("../../src/Controllers/provincesController");
 const systemSuppliersController = require("../../src/Controllers/systemSuppliersController");
 const authController = require("../../src/Controllers/authController");
+const permissionsController = require("../../src/Controllers/permissionsController");
 
 const jwtToken = require("./jwtController");
 
@@ -56,6 +57,8 @@ const pgfGenerator = require("./pdf_generator");
 // Registrar todas as rotas com seus respectivos prefixos
 router.use("/jwt", jwtToken);
 router.use("/users", users);
+
+router.get("/listarClassesEFuncoes", permissionsController.listar);
 // CRUD regulators
 router.post("/regulators", regulatorsController.create);
 router.get("/regulators", regulatorsController.findAll);
@@ -82,6 +85,7 @@ router.put("/system_suppliers/:id", systemSuppliersController.update);
 router.delete("/system_suppliers/:id", systemSuppliersController.delete);
 //login user
 router.post("/userLogin", authController.login);
+router.get("/checkToken", authController.checkToken);
 router.post("/users/chenge/pass", authController.updatePassword);
 
 // router.use("/user_login", user_login);
