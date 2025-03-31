@@ -25,9 +25,9 @@ async function login(req, res) {
                 where: { "$roles.table_name$": "regulators" }, // Filtro para reguladores
               },
               {
-                association: "operators",
+                association: "system_suppliers",
                 required: false, // Não é obrigatório ter um operador
-                where: { "$roles.table_name$": "operators" }, // Filtro para operadores
+                where: { "$roles.table_name$": "system_suppliers" }, // Filtro para operadores
               },
             ],
           },
@@ -77,8 +77,16 @@ async function login(req, res) {
           message: "O E-mail ou Celular que digitou não encontra-se registado.",
         });
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      logger.error({
+        message:
+          error.errors?.map((e) => e.message).join(" | ") || error.message,
+        stack: error.stack,
+        sql: error.sql,
+        parameters: error.parameters,
+        timestamp: new Date(),
+      });
+      console.error(error);
       return res.status(500).json({
         success: false,
         message: "Erro no servidor.",
@@ -139,11 +147,12 @@ async function updatePassword(req, res) {
               );
             })
             .catch((error) => {
-              res
-                .status(500)
-                .send(
-                  JSON.stringify({ success: false, message: error.message })
-                );
+              res.status(500).send(
+                JSON.stringify({
+                  success: false,
+                  message: "Erro no servidor.",
+                })
+              );
             });
           logger.error({
             message:
@@ -160,40 +169,6 @@ async function updatePassword(req, res) {
           .status(500)
           .send(JSON.stringify({ success: false, message: err.message }));
       });
-    // req.getConnection(function (err, conn) {
-    //   if (err) {
-    //     res.status(500).send(JSON.stringify({ success: false, message: err }));
-    //   } else {
-    //     bcrypt.hash(code, 10, (errBcrypt, hash) => {
-    //       if (errBcrypt) {
-    //         res.status(500);
-    //         res.send(JSON.stringify({ success: false, message: errBcrypt }));
-    //       } else {
-    //         conn.query(
-    //           "UPDATE users SET code=?, password=? WHERE id=?",
-    //           [code, hash, id],
-    //           function (err, rows, fields) {
-    //             if (err) {
-    //               res.status(500);
-    //               res.send(
-    //                 JSON.stringify({ success: false, message: err.message })
-    //               );
-    //             } else {
-    //               if (rows.affectedRows > 0) {
-    //                 res.send(
-    //                   JSON.stringify({
-    //                     success: true,
-    //                     message: "Senha actualizada com sucesso",
-    //                   })
-    //                 );
-    //               }
-    //             }
-    //           }
-    //         );
-    //       }
-    //     });
-    //   }
-    // });
   } else {
     res.send(JSON.stringify({ success: false, message: "Invalid userId" }));
   }
@@ -206,7 +181,7 @@ async function checkToken(req, res) {
   try {
     decoded = jwt.verify(authorization.split(" ")[1], SECRET_KEY);
   } catch (e) {
-    return res.status(401).send({success: false, message: e});
+    return res.status(401).send({ success: false, message: e });
   }
   const uid = decoded.uid;
 

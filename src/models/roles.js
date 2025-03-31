@@ -14,16 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       roles.belongsTo(models.regulators, {
         foreignKey: "table_id",
         constraints: false, // Removemos a restrição para suportar múltiplas tabelas
-        // scope: {
-        //   table_name: "regulators",
-        // },
         as: "regulators",
       });
-      roles.belongsTo(models.operators, {
+      roles.belongsTo(models.system_suppliers, {
         foreignKey: "table_id",
         constraints: false,
-        // scope: { table_name: "operators" },
-        as: "operators",
+        as: "system_suppliers",
       });
     }
   }

@@ -2554,6 +2554,8 @@ CREATE TABLE `districts` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `provinceId` int(11) NOT NULL
+    createdAt timestamp  NULL DEFAULT,
+  updatedAt timestamp  NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -14989,7 +14991,9 @@ INSERT INTO `proforma` (`id`, `invoiceId`, `preRegistrationId`, `customerName`, 
 
 CREATE TABLE `provinces` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL
+  `name` varchar(50) NOT NULL, 
+    createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -15035,6 +15039,8 @@ CREATE TABLE `readings` (
   `waterMeterImageUrl` text DEFAULT NULL,
   `lat` varchar(45) DEFAULT NULL,
   `lng` varchar(45) DEFAULT NULL
+     createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15045,7 +15051,9 @@ CREATE TABLE `readings` (
 
 CREATE TABLE `regulators` (
   `id` int(11) NOT NULL,
-  `operators_id` int(11) NOT NULL
+  `name` varchar(45) NOT NULL,
+    createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15089,7 +15097,9 @@ CREATE TABLE `roles` (
   `role` varchar(45) NOT NULL,
   `createdA` date NOT NULL,
   `tableName` varchar(45) NOT NULL,
-  `tableId` int(11) NOT NULL
+  `table_id` int(11) NOT NULL,
+    createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15129,9 +15139,11 @@ CREATE TABLE `support` (
 CREATE TABLE `system_suppliers` (
   `id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
-  `districts_id` int(11) NOT NULL,
-  `operators_id` int(11) NOT NULL,
-  `accounts_id` int(11) NOT NULL
+  `district_id` int(11) NOT NULL,
+  `operator_id` int(11) NOT NULL,
+  `account_id` int(11) NOT NULL,
+  createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15151,7 +15163,8 @@ CREATE TABLE `tarrifs` (
   `aboveSeven` float NOT NULL,
   `firstFifteen` float NOT NULL,
   `aboveFifteen` float NOT NULL,
-  `createdAt` varchar(100) NOT NULL
+  createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -15205,7 +15218,8 @@ CREATE TABLE `users` (
   `password` text NOT NULL,
   `email` varchar(100) NOT NULL,
   `status` int(11) NOT NULL,
-  `createdAt` varchar(255) NOT NULL,
+  createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
   `token` text DEFAULT NULL,
   `roles_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -15241,7 +15255,8 @@ CREATE TABLE `whatsapp` (
   `barcode` varchar(15) NOT NULL,
   `staffName` varchar(45) NOT NULL,
   `status` int(11) DEFAULT NULL,
-  `createdAt` varchar(45) NOT NULL
+    createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --

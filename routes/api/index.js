@@ -3,8 +3,11 @@ const router = express.Router();
 
 // Importar todas as rotas
 const regulatorsController = require("../../src/Controllers/regulatorsController");
-const operatorsControllers = require("../../src/Controllers/operatorsControllers");
+const operatorsControllers = require("../../src/Controllers/operatorsController");
+const provincesController = require("../../src/Controllers/provincesController");
+const systemSuppliersController = require("../../src/Controllers/systemSuppliersController");
 const authController = require("../../src/Controllers/authController");
+const permissionsController = require("../../src/Controllers/permissionsController");
 
 const jwtToken = require("./jwtController");
 
@@ -54,6 +57,8 @@ const pgfGenerator = require("./pdf_generator");
 // Registrar todas as rotas com seus respectivos prefixos
 router.use("/jwt", jwtToken);
 router.use("/users", users);
+
+router.get("/listarClassesEFuncoes", permissionsController.listar);
 // CRUD regulators
 router.post("/regulators", regulatorsController.create);
 router.get("/regulators", regulatorsController.findAll);
@@ -66,6 +71,18 @@ router.get("/operators", operatorsControllers.findAll);
 router.get("/operators/:id", operatorsControllers.findOne);
 router.put("/operators/:id", operatorsControllers.update);
 router.delete("/operators/:id", operatorsControllers.delete);
+// CRUD provinces
+router.post("/provinces", provincesController.create);
+router.get("/provinces", provincesController.findAll);
+router.get("/provinces/:id", provincesController.findOne);
+router.put("/provinces/:id", provincesController.update);
+router.delete("/provinces/:id", provincesController.delete);
+// CRUD system_suppliers
+router.post("/system_suppliers", systemSuppliersController.create);
+router.get("/system_suppliers", systemSuppliersController.findAll);
+router.get("/system_suppliers/:id", systemSuppliersController.findOne);
+router.put("/system_suppliers/:id", systemSuppliersController.update);
+router.delete("/system_suppliers/:id", systemSuppliersController.delete);
 //login user
 router.post("/userLogin", authController.login);
 router.get("/checkToken", authController.checkToken);
