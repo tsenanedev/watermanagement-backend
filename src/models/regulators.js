@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "regulators",
       timestamps: true,
-
+      paranoid: true,
       hooks: {
         beforeValidate: (regulator) => {
           // Gera o código AUTOMATICAMENTE (se não existir)

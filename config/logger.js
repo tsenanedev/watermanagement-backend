@@ -3,7 +3,7 @@ const DailyRotateFile = require("winston-daily-rotate-file");
 const path = require("path");
 
 // Diretório onde os logs serão salvos
-const logDirectory = path.join(__dirname, "logs");
+const logDirectory = path.join(__dirname, "..", "logs");
 
 // Criar logger
 const logger = createLogger({

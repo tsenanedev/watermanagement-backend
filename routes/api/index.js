@@ -58,7 +58,7 @@ const pgfGenerator = require("./pdf_generator");
 router.use("/jwt", jwtToken);
 router.use("/users", users);
 
-router.get("/listarClassesEFuncoes", permissionsController.listar);
+router.get("/permissions", permissionsController.findAll);
 // CRUD regulators
 router.post("/regulators", regulatorsController.create);
 router.get("/regulators", regulatorsController.findAll);

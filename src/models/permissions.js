@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class permissions extends Model {
     /**
@@ -11,14 +9,26 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      permissions.belongsToMany(models.regulators, {
+        through: "roles_has_permissions",
+        foreignKey: "role_id",
+        otherKey: "permission_id",
+        as: "roles",
+      });
     }
   }
-  permissions.init({
-    name: DataTypes.STRING,
-    table_name: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'permissions',
-  });
+  permissions.init(
+    {
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true, // 👈 Ativa a validação de unicidade
+      },
+    },
+    {
+      sequelize,
+      modelName: "permissions",
+    }
+  );
   return permissions;
 };
