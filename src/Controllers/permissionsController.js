@@ -1,7 +1,6 @@
 const fs = require("fs");
 const path = require("path");
 const { permissions: permissions } = require("../models");
-// const sequelize = require("sequelize");
 const { roles: roles } = require("../models");
 
 exports.findAll = async (req, res) => {
