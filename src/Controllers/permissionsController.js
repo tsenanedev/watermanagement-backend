@@ -1,58 +1,94 @@
 const fs = require("fs");
 const path = require("path");
+const { permissions: permissions } = require("../models");
+const { roles: roles } = require("../models");
 
-// Definir controladores e métodos a serem ignorados
-const ignoredControllers = ["auth", "permissions"]; // Controladores a ignorar
+exports.findAll = async (req, res) => {
+  try {
+    const result = await bulkImportPermissions();
 
-const ignoredMethods = [
-  // "provinces-create", // Métodos específicos a ignorar
-];
-const ignoredGlobalMethods = [""]; // Métodos globais a ignorar
-exports.listar = (req, res) => {
-  res.status(200).json(loadControllerMethods());
+    res.status(200).json({
+      success: true,
+      message: "Permissões processadas com sucesso",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Erro ao processar permissões",
+      error: error.message,
+    });
+    logger.error({
+      message: error.errors?.map((e) => e.message).join(" | ") || error.message,
+      stack: error.stack,
+      sql: error.sql,
+      parameters: error.parameters,
+      timestamp: new Date(),
+    });
+  }
 };
 loadControllerMethods = () => {
+  const ignoredControllers = ["auth"]; // Controladores a ignorar
+
+  const ignoredMethods = [
+    "permissions-bulkImportPermissions",
+    "permissions-loadControllerMethods",
+    // "provinces-create", // Métodos específicos a ignorar
+  ];
+  const ignoredGlobalMethods = [""]; // Métodos globais a ignorar
+
   const controllersPath = path.join(__dirname, "..", "controllers");
-  const controllers = fs.readdirSync(controllersPath); // Ler arquivos na pasta controllers
-  const methodMap = []; // Mapeamento de controladores e métodos
+  const controllers = fs.readdirSync(controllersPath);
+  const methodMap = [];
 
   controllers.forEach((controllerFile) => {
-    const controllerName = controllerFile.replace("Controller.js", ""); // Nome do controlador sem sufixo 'Controller'
+    const controllerName = controllerFile.replace("Controller.js", "");
 
-    // Ignorar controladores especificados
     if (ignoredControllers.includes(controllerName.toLowerCase())) return;
 
     const controller = require(path.join(controllersPath, controllerFile));
 
-    // Processar métodos do controlador
     Object.keys(controller).forEach((methodName) => {
-      // Ignorar métodos específicos ou globais
       if (
         ignoredMethods.includes(`${controllerName}-${methodName}`) ||
         ignoredGlobalMethods.includes(methodName)
       )
         return;
 
-      // Adicionar ao mapeamento
-      // methodMap = methodMap || [];
       methodMap.push(`${controllerName}-${methodName}`);
     });
   });
   return methodMap;
-  bulkImportPermissions(methodMap);
 };
 
 async function bulkImportPermissions() {
+  const transaction = await permissions.sequelize.transaction();
   const permissionsData = loadControllerMethods();
   try {
-    // Usando bulkCreate para importar permissões em volume e ignorar duplicatas
-    const result = await permissions.bulkCreate(permissionsData, {
-      ignoreDuplicates: true, // Ignora as permissões que já existem com base em chaves únicas
+    const permissionsArray = [...new Set(permissionsData)].map((name) => ({
+      name,
+    }));
+
+    const existingPermissions = await permissions.findAll({
+      attributes: ["id", "name"],
+      order: [["name", "ASC"]],
+      raw: true,
     });
 
-    console.log("Permissões importadas com sucesso!");
-    return result;
+    const existingNames = new Set(existingPermissions.map((p) => p.name));
+    const newPermissions = permissionsArray.filter(
+      (p) => !existingNames.has(p.name)
+    );
+
+    if (newPermissions.length > 0) {
+      await permissions.bulkCreate(newPermissions, { ignoreDuplicates: true });
+    }
+    await transaction.commit();
+
+    return { Permissions: existingPermissions };
+    // role.addPermissions(result);
   } catch (error) {
-    console.error("Erro ao importar permissões:", error);
+    await transaction.rollback();
+    throw new Error(`Falha na importação`);
   }
 }

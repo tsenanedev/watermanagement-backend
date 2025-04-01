@@ -1,8 +1,5 @@
 const { system_suppliers: system_suppliers } = require("../models");
 const { Op } = require("sequelize");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-var SECRET_KEY = "leonelMatsinheRestFullApiFOrMatiAppWeb1865375hdyt";
 
 exports.create = async (req, res) => {
   try {

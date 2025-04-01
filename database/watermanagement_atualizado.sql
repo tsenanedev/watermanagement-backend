@@ -15109,8 +15109,10 @@ CREATE TABLE `roles` (
 --
 
 CREATE TABLE `roles_has_permissions` (
-  `roles_id` int(11) NOT NULL,
-  `permissions_id` int(11) NOT NULL
+  `role_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL
+  createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
