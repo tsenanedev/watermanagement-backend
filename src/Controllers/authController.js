@@ -185,7 +185,7 @@ async function checkToken(req, res) {
   }
   const uid = decoded.uid;
 
-  res.send(JSON.stringify({ success: true, message: uid }));
+  res.send(JSON.stringify({ success: true, token: uid }));
 }
 
 module.exports = {
