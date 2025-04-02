@@ -1,9 +1,75 @@
-const { roles: roles } = require("../models");
-const { Op } = require("sequelize");
+const { roles: roles, models } = require("../models");
+
 exports.create = async (req, res) => {
+  const {
+    name: RoleName,
+    description,
+    table_name,
+    table_id,
+    permissions,
+  } = req.body;
+  const allowedTables = ["regulators", "system_suppliers"];
   try {
-    const role = await roles.create(req.body);
-    res.status(201).json(role);
+    const transaction = await roles.sequelize.transaction();
+
+    if (table_name && !allowedTables.includes(table_name)) {
+      throw new Error(
+        "O nome da entidade inválido (indique se é: regulador ou Sistema de Abastecimento)"
+      );
+    }
+    // const modelo = allowedTables[table_name];
+    // const entity = await modelo.findByPk(table_id);
+    // if (!entity) {
+    //   throw new Error("entidade indicada não existe");
+    // }
+
+    if (!RoleName || RoleName.length < 3) {
+      throw new Error("Nome da role deve ter pelo menos 3 caracteres");
+    }
+
+    if (
+      !permissions ||
+      !Array.isArray(permissions) ||
+      permissions.length === 0
+    ) {
+      throw new Error("Lista de permissões é inválida ou vazia");
+    }
+    const invalidPermissions = permissions.filter((p) => !p.id);
+    if (invalidPermissions.length > 0) {
+      throw new Error("Permissões devem conter IDs válidos");
+    }
+    const existingRole = await roles.findOne({
+      where: { name: RoleName },
+      transaction,
+    });
+
+    if (existingRole) {
+      throw new Error(`Role '${RoleName}' já existe`);
+    }
+    // 3. Extrair e validar IDs das permissões
+    const permissionIds = permissions.map((p) => p.id);
+    const uniqueIds = [...new Set(permissionIds)];
+
+    // 4. Verificar consistência numérica
+    if (uniqueIds.some(isNaN)) throw new Error("IDs de permissão inválidos");
+    const role = await roles.create(
+      {
+        name: RoleName,
+        description: description,
+        table_name: table_name,
+        table_id: table_id,
+      },
+      { transaction }
+    );
+    await role.addPermissions(uniqueIds, { transaction });
+
+    await transaction.commit();
+
+    res.status(200).json({
+      success: true,
+      message: "Permissões processadas com sucesso",
+      data: role,
+    });
   } catch (error) {
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
@@ -13,7 +79,7 @@ exports.create = async (req, res) => {
       timestamp: new Date(),
     });
 
-    res.status(400).json({ error: "Falha ao criar grupo de permissão" });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -46,9 +112,32 @@ exports.update = async (req, res) => {
 // Listar todos os rolees
 exports.findAll = async (req, res) => {
   try {
-    const allrole = await role.findAll();
+    const allrole = await roles.findAll({
+      include: [
+        {
+          association: "regulators",
+          required: false, // Não é obrigatório ter um regulador
+          where: { "$roles.table_name$": "regulators" }, // Filtro para reguladores
+        },
+        {
+          association: "system_suppliers",
+          required: false, // Não é obrigatório ter um operador
+          where: { "$roles.table_name$": "system_suppliers" }, // Filtro para operadores
+          include: [
+            {
+              association: "operators", // Alias definido na associação
+              attributes: ["id", "name"], // Campos específicos do operador (opcional)
+            },
+          ],
+        },
+      ],
+    });
 
-    res.json(allrole);
+    res.status(200).json({
+      success: true,
+      message: "Grupo de permissões processados com sucesso",
+      data: allrole,
+    });
   } catch (error) {
     res
       .status(500)
@@ -73,9 +162,13 @@ exports.findOne = async (req, res) => {
         .status(404)
         .json({ error: "grupo de permissão não encontrado" });
     }
-    res.json(role);
+    res.status(200).json({
+      success: true,
+      message: "Grupo de permissões encontrado",
+      data: role,
+    });
   } catch (error) {
-    res.status(500).json({ error: "erro buscar um grupo de permissão por ID" });
+    res.status(500).json({ error: "erro buscar um grupo de permissão " });
 
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
@@ -92,11 +185,11 @@ exports.delete = async (req, res) => {
     if (deleted === 0) {
       return res
         .status(404)
-        .json({ error: "grupo de permissão não encontrado" });
+        .json({ success: false, error: "grupo de permissão não encontrado" });
     }
     res.status(204).json("grupo de permissão removido com sucesso");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ success: false, error: "erro ao remover grupo" });
 
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,

@@ -86,7 +86,6 @@ async function login(req, res) {
         parameters: error.parameters,
         timestamp: new Date(),
       });
-      console.error(error);
       return res.status(500).json({
         success: false,
         message: "Erro no servidor.",

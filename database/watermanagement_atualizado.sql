@@ -29,26 +29,27 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `accounts` (
   `id` int(11) NOT NULL,
-  `bankId` int(11) NOT NULL,
+  `bank_id` int(11) NOT NULL,
   `accountNumber` varchar(100) NOT NULL,
   `companyId` varchar(100) NOT NULL,
   `status` varchar(10) NOT NULL,
-  `createdAt` varchar(100) NOT NULL
+     createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp NOT NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bankaccounts`
+-- Table structure for table `banks`
 --
 
-CREATE TABLE `bankaccounts` (
+CREATE TABLE `banks` (
   `id` int(11) NOT NULL,
-  `bankId` int(11) NOT NULL,
-  `accountNumber` varchar(100) NOT NULL,
-  `companyId` varchar(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `status` varchar(10) NOT NULL,
-  `createdAt` varchar(100) NOT NULL
+  createdAt timestamp NOT NULL DEFAULT,
+  updatedAt timestamp  NULL DEFAULT,
+  deletedAt timestamp  NULL DEFAULT,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15326,9 +15327,9 @@ ALTER TABLE `accounts`
   ADD UNIQUE KEY `accountNumber` (`accountNumber`);
 
 --
--- Indexes for table `bankaccounts`
+-- Indexes for table `banks`
 --
-ALTER TABLE `bankaccounts`
+ALTER TABLE `banks`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `accountNumber` (`accountNumber`);
 
@@ -15551,9 +15552,9 @@ ALTER TABLE `accounts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `bankaccounts`
+-- AUTO_INCREMENT for table `banks`
 --
-ALTER TABLE `bankaccounts`
+ALTER TABLE `banks`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -15764,7 +15765,7 @@ ALTER TABLE `roles_has_permissions`
 -- Constraints for table `system_suppliers`
 --
 ALTER TABLE `system_suppliers`
-  ADD CONSTRAINT `fk_system_suppliers_accounts1` FOREIGN KEY (`accounts_id`) REFERENCES `bankaccounts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_system_suppliers_accounts1` FOREIGN KEY (`accounts_id`) REFERENCES `banks` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_system_suppliers_districts` FOREIGN KEY (`districts_id`) REFERENCES `districts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_system_suppliers_operators1` FOREIGN KEY (`operators_id`) REFERENCES `operators` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
