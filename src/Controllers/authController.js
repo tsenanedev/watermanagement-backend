@@ -110,8 +110,7 @@ async function updatePassword(req, res) {
   }
 
   const uid = decoded.uid;
-  const id = req.body.id;
-  const email = req.body.email;
+  const password = req.body.password;
 
   if (uid && email && id) {
     Users.findByPk(id)

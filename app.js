@@ -8,7 +8,7 @@ const morgan = require("morgan");
 const exphbs = require("express-handlebars");
 const routes = require("./routes/api");
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 // globals.js
 const logger = require("./config/logger"); // Importa o logger
 global.logger = logger; // Define a variável global
