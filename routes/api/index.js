@@ -8,7 +8,7 @@ const provincesController = require("../../src/Controllers/provincesController")
 const systemSuppliersController = require("../../src/Controllers/systemSuppliersController");
 const authController = require("../../src/Controllers/authController");
 const permissionsController = require("../../src/Controllers/permissionsController");
-
+const rolesController = require("../../src/Controllers/rolesController");
 const jwtToken = require("./jwtController");
 
 const users = require("./users");
@@ -59,6 +59,13 @@ router.use("/jwt", jwtToken);
 router.use("/users", users);
 
 router.get("/permissions", permissionsController.findAll);
+
+// CRUD roles
+router.post("/roles", rolesController.create);
+router.get("/roles", rolesController.findAll);
+router.get("/roles/:id", rolesController.findOne);
+router.put("/roles/:id", rolesController.update);
+router.delete("/roles/:id", rolesController.delete);
 // CRUD regulators
 router.post("/regulators", regulatorsController.create);
 router.get("/regulators", regulatorsController.findAll);
