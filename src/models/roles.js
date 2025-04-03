@@ -31,9 +31,22 @@ module.exports = (sequelize, DataTypes) => {
   }
   roles.init(
     {
-      name: DataTypes.STRING,
-      table_name: DataTypes.STRING,
-      table_id: DataTypes.INTEGER,
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      description: {
+        type: DataTypes.TEXT, // ou DataTypes.STRING
+        allowNull: true, // Permite valores nulos (opcional)
+      },
+      table_name: {
+        type: DataTypes.STRING,
+        allowNull: false, // Campo obrigatório
+      },
+      table_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false, // Campo obrigatório
+      },
     },
     {
       sequelize,

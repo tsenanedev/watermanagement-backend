@@ -15097,6 +15097,7 @@ CREATE TABLE `roles` (
   `id` int(11) NOT NULL,
   `role` varchar(45) NOT NULL,
   `createdA` date NOT NULL,
+  `description` text NULL,
   `tableName` varchar(45) NOT NULL,
   `table_id` int(11) NOT NULL,
     createdAt timestamp NOT NULL DEFAULT,

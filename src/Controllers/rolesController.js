@@ -1,4 +1,9 @@
-const { roles: roles, models } = require("../models");
+const {
+  roles: roles,
+  system_suppliers: system_suppliers,
+  regulators: regulators,
+  models,
+} = require("../models");
 
 exports.create = async (req, res) => {
   const {
@@ -8,20 +13,27 @@ exports.create = async (req, res) => {
     table_id,
     permissions,
   } = req.body;
-  const allowedTables = ["regulators", "system_suppliers"];
+  const transaction = await roles.sequelize.transaction();
   try {
-    const transaction = await roles.sequelize.transaction();
+    const targetModel = {
+      regulators,
+      system_suppliers,
+    }[(table_name || "").toLowerCase()];
 
-    if (table_name && !allowedTables.includes(table_name)) {
+    if (!targetModel) {
       throw new Error(
-        "O nome da entidade inválido (indique se é: regulador ou Sistema de Abastecimento)"
+        "O nome da entidade é inválido (use: Regulador ou Sistema de Abstecimento)"
       );
     }
-    // const modelo = allowedTables[table_name];
-    // const entity = await modelo.findByPk(table_id);
-    // if (!entity) {
-    //   throw new Error("entidade indicada não existe");
-    // }
+    const model = await targetModel.findByPk(table_id);
+
+    if (!model) {
+      throw new Error(
+        `${
+          table_name == "regulators" ? "Regulador" : "Sistema de Abstecimento"
+        } não encontrado`
+      );
+    }
 
     if (!RoleName || RoleName.length < 3) {
       throw new Error("Nome da role deve ter pelo menos 3 caracteres");
@@ -57,7 +69,7 @@ exports.create = async (req, res) => {
         name: RoleName,
         description: description,
         table_name: table_name,
-        table_id: table_id,
+        table_id: model.id,
       },
       { transaction }
     );
@@ -67,10 +79,11 @@ exports.create = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Permissões processadas com sucesso",
+      message: "Role criada com sucesso",
       data: role,
     });
   } catch (error) {
+    await transaction.rollback();
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
       stack: error.stack,
@@ -78,7 +91,6 @@ exports.create = async (req, res) => {
       parameters: error.parameters,
       timestamp: new Date(),
     });
-
     res.status(400).json({ error: error.message });
   }
 };
@@ -139,10 +151,6 @@ exports.findAll = async (req, res) => {
       data: allrole,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "erro ao listar todos os grupo de permissão" });
-
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
       stack: error.stack,
@@ -150,6 +158,9 @@ exports.findAll = async (req, res) => {
       parameters: error.parameters,
       timestamp: new Date(),
     });
+    res
+      .status(500)
+      .json({ error: "erro ao listar todos os grupo de permissão" });
   }
 };
 
