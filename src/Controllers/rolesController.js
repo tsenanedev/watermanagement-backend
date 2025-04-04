@@ -2,7 +2,6 @@ const {
   roles: roles,
   system_suppliers: system_suppliers,
   regulators: regulators,
-  models,
 } = require("../models");
 
 exports.create = async (req, res) => {

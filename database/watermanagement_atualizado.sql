@@ -33,8 +33,8 @@ CREATE TABLE `accounts` (
   `accountNumber` varchar(100) NOT NULL,
   `companyId` varchar(100) NOT NULL,
   `status` varchar(10) NOT NULL,
-     createdAt timestamp NOT NULL DEFAULT,
-  updatedAt timestamp NOT NULL DEFAULT,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -47,9 +47,9 @@ CREATE TABLE `banks` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `status` varchar(10) NOT NULL,
-  createdAt timestamp NOT NULL DEFAULT,
-  updatedAt timestamp  NULL DEFAULT,
-  deletedAt timestamp  NULL DEFAULT,
+   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp,
+  deletedAt timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -72,7 +72,9 @@ CREATE TABLE `billing` (
   `vat` float DEFAULT NULL,
   `totalOfBill` float DEFAULT NULL,
   `staffName` varchar(100) DEFAULT NULL,
-  `consumoFacturado` int(11) DEFAULT 0
+  `consumoFacturado` int(11) DEFAULT 0,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -84,7 +86,9 @@ CREATE TABLE `billing` (
 CREATE TABLE `billing_payment` (
   `id` int(11) NOT NULL,
   `createdAt` date NOT NULL,
-  `payments_id` int(11) NOT NULL
+  `payments_id` int(11) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -99,7 +103,8 @@ CREATE TABLE `branches` (
   `provinceId` int(11) NOT NULL,
   `districtId` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `createdAt` varchar(255) NOT NULL
+   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -136,7 +141,8 @@ CREATE TABLE `companies` (
   `bankAccount2` varchar(255) NOT NULL,
   `nib` text NOT NULL,
   `nib2` varchar(255) NOT NULL,
-  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -164,7 +170,9 @@ CREATE TABLE `customerbalance` (
   `description` text NOT NULL,
   `provider` varchar(25) NOT NULL,
   `status` varchar(20) NOT NULL DEFAULT 'not_paid',
-  `dateCreated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `dateCreated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -216,7 +224,8 @@ CREATE TABLE `customers` (
   `whatsapp` int(11) NOT NULL,
   `appAndroid` int(11) NOT NULL,
   `readingStatus` int(11) NOT NULL,
-  `createdAt` varchar(100) NOT NULL
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -1025,7 +1034,8 @@ CREATE TABLE `debts` (
   `status` int(11) NOT NULL,
   `branchId` int(11) NOT NULL,
   `staffName` varchar(100) NOT NULL,
-  `createdAt` varchar(100) NOT NULL
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -2554,9 +2564,9 @@ INSERT INTO `debts` (`id`, `barcode`, `billId`, `amount`, `tarrifTypeId`, `descr
 CREATE TABLE `districts` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `provinceId` int(11) NOT NULL
-    createdAt timestamp  NULL DEFAULT,
-  updatedAt timestamp  NULL DEFAULT,
+  `provinceId` int(11) NOT NULL,
+ `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -2664,7 +2674,7 @@ INSERT INTO `districts` (`id`, `name`, `provinceId`) VALUES
 (99, 'Mecula', 10),
 (100, 'Metarica', 10),
 (101, 'Muembe', 10),
-(102, 'N\'gauma', 10),
+(102, 'Ngauma', 10),
 (103, 'Nipepe', 10),
 (104, 'Sanga', 10),
 (105, 'Beira', 5),
@@ -2737,7 +2747,8 @@ CREATE TABLE `meters` (
   `diameter` varchar(15) NOT NULL,
   `description` text NOT NULL,
   `status` int(11) NOT NULL DEFAULT 0,
-  `createdAt` varchar(100) NOT NULL
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -2770,14 +2781,14 @@ INSERT INTO `meters` (`id`, `meterNumber`, `diameter`, `description`, `status`, 
 (425, '20200902622', '3/4', '', 395, '26/8/2021'),
 (435, '20200901264', '3/4', '', 405, '26/8/2021'),
 (445, '20200901439', '3/4', '', 435, '26/8/2021'),
-(455, '', '3/4', '', 525, '26/8/2021'),
+(455, '20200914395', '3/4', '', 525, '26/8/2021'),
 (475, '202009007338', '3/4', '', 445, '26/8/2021'),
 (485, '20200902243', '3/4', '', 455, '26/8/2021'),
 (495, '20200902618', '3/4', '', 465, '26/8/2021'),
 (505, '20200900114', '3/4', '', 475, '26/8/2021'),
 (515, '20200902624', '3/4', '', 485, '26/8/2021'),
 (525, '20200902190', '3/4', '', 495, '26/8/2021'),
-(535, '20200900812', '3/4', 'Mucuine', 525, '26/8/2021'),
+(535, '20200900812', '3/4', '', 525, '26/8/2021'),
 (545, '20200902045', '3/4', '', 2045, '26/8/2021'),
 (555, '20200900517', '3/4', '', 535, '26/8/2021'),
 (565, '20200900189', '3/4', '', 545, '26/8/2021'),
@@ -4304,8 +4315,10 @@ CREATE TABLE `neighbourhoods` (
   `companyId` int(11) NOT NULL,
   `districtId` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `createdAt` varchar(255) NOT NULL,
-  `districts_id` int(11) NOT NULL
+   `updatedAt` timestamp,
+  `districts_id` int(11) NOT NULL,
+   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -4316,7 +4329,9 @@ CREATE TABLE `neighbourhoods` (
 
 CREATE TABLE `operators` (
   `id` int(11) NOT NULL,
-  `name` varchar(45) NOT NULL
+  `name` varchar(45) NOT NULL,
+   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -4338,7 +4353,8 @@ CREATE TABLE `payments` (
   `staffName` varchar(100) NOT NULL,
   `paymentMethod` int(11) NOT NULL,
   `dateOfPayment` varchar(50) NOT NULL,
-  `createdAt` varchar(50) DEFAULT NULL
+   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -14847,7 +14863,8 @@ CREATE TABLE `products` (
   `diameter` varchar(10) NOT NULL,
   `name` varchar(100) NOT NULL,
   `price` float NOT NULL,
-  `createdAt` text NOT NULL
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -14868,7 +14885,8 @@ CREATE TABLE `proforma` (
   `itemsDetails` text NOT NULL,
   `staffName` varchar(255) NOT NULL,
   `status` int(11) NOT NULL,
-  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -14993,8 +15011,8 @@ INSERT INTO `proforma` (`id`, `invoiceId`, `preRegistrationId`, `customerName`, 
 CREATE TABLE `provinces` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL, 
-    createdAt timestamp NOT NULL DEFAULT,
-  updatedAt timestamp NOT NULL DEFAULT,
+     `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -15039,9 +15057,9 @@ CREATE TABLE `readings` (
   `readingStatus` int(11) NOT NULL,
   `waterMeterImageUrl` text DEFAULT NULL,
   `lat` varchar(45) DEFAULT NULL,
-  `lng` varchar(45) DEFAULT NULL
-     createdAt timestamp NOT NULL DEFAULT,
-  updatedAt timestamp NOT NULL DEFAULT,
+  `lng` varchar(45) DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15053,8 +15071,9 @@ CREATE TABLE `readings` (
 CREATE TABLE `regulators` (
   `id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
-    createdAt timestamp NOT NULL DEFAULT,
-  updatedAt timestamp NOT NULL DEFAULT,
+  `code` varchar(45) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15069,7 +15088,8 @@ CREATE TABLE `reportnotes` (
   `staffName` varchar(255) NOT NULL,
   `month` int(11) NOT NULL,
   `year` int(11) NOT NULL,
-  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -15100,8 +15120,8 @@ CREATE TABLE `roles` (
   `description` text NULL,
   `tableName` varchar(45) NOT NULL,
   `table_id` int(11) NOT NULL,
-    createdAt timestamp NOT NULL DEFAULT,
-  updatedAt timestamp NOT NULL DEFAULT,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15112,9 +15132,9 @@ CREATE TABLE `roles` (
 
 CREATE TABLE `roles_has_permissions` (
   `role_id` int(11) NOT NULL,
-  `permission_id` int(11) NOT NULL
-  createdAt timestamp NOT NULL DEFAULT,
-  updatedAt timestamp NOT NULL DEFAULT,
+  `permission_id` int(11) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15131,7 +15151,9 @@ CREATE TABLE `support` (
   `messageBody` longtext NOT NULL,
   `sentDateTime` varchar(45) NOT NULL,
   `status` int(11) NOT NULL,
-  `customerName` varchar(100) NOT NULL
+  `customerName` varchar(100) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15146,8 +15168,8 @@ CREATE TABLE `system_suppliers` (
   `district_id` int(11) NOT NULL,
   `operator_id` int(11) NOT NULL,
   `account_id` int(11) NOT NULL,
-  createdAt timestamp NOT NULL DEFAULT,
-  updatedAt timestamp NOT NULL DEFAULT,
+   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -15167,8 +15189,8 @@ CREATE TABLE `tarrifs` (
   `aboveSeven` float NOT NULL,
   `firstFifteen` float NOT NULL,
   `aboveFifteen` float NOT NULL,
-  createdAt timestamp NOT NULL DEFAULT,
-  updatedAt timestamp NOT NULL DEFAULT,
+   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -15192,7 +15214,9 @@ INSERT INTO `tarrifs` (`id`, `tarrifTypeId`, `serviceAvailabilityFee`, `pricePer
 
 CREATE TABLE `tarrif_type` (
   `id` int(11) NOT NULL,
-  `name` varchar(25) NOT NULL
+  `name` varchar(25) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -15222,10 +15246,10 @@ CREATE TABLE `users` (
   `password` text NOT NULL,
   `email` varchar(100) NOT NULL,
   `status` int(11) NOT NULL,
-  createdAt timestamp NOT NULL DEFAULT,
-  updatedAt timestamp NOT NULL DEFAULT,
   `token` text DEFAULT NULL,
-  `roles_id` int(11) NOT NULL
+  `roles_id` int(11) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -15259,8 +15283,8 @@ CREATE TABLE `whatsapp` (
   `barcode` varchar(15) NOT NULL,
   `staffName` varchar(45) NOT NULL,
   `status` int(11) DEFAULT NULL,
-    createdAt timestamp NOT NULL DEFAULT,
-  updatedAt timestamp NOT NULL DEFAULT
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
@@ -15313,7 +15337,9 @@ INSERT INTO `whatsapp` (`id`, `phone`, `message`, `barcode`, `staffName`, `statu
 CREATE TABLE `zones` (
   `id` int(11) NOT NULL,
   `districtId` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL
+  `name` varchar(100) NOT NULL,
+    `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
