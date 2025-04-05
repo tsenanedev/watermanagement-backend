@@ -9,6 +9,11 @@ const systemSuppliersController = require("../../src/Controllers/systemSuppliers
 const authController = require("../../src/Controllers/authController");
 const permissionsController = require("../../src/Controllers/permissionsController");
 const rolesController = require("../../src/Controllers/rolesController");
+const authMiddleware = require("../../src/middlewares/authMiddleware");
+const {
+  hasPermission,
+  hasRole,
+} = require("../../src/middlewares/authorization");
 const jwtToken = require("./jwtController");
 
 const users = require("./users");
@@ -58,7 +63,12 @@ const pgfGenerator = require("./pdf_generator");
 router.use("/jwt", jwtToken);
 router.use("/users", users);
 
-router.get("/permissions", permissionsController.findAll);
+router.get(
+  "/permissions",
+  authMiddleware,
+  hasPermission("permissions-findAll"),
+  permissionsController.findAll
+);
 
 // CRUD roles
 router.post("/roles", rolesController.create);

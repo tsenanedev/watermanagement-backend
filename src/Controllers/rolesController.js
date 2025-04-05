@@ -35,7 +35,9 @@ exports.create = async (req, res) => {
     }
 
     if (!RoleName || RoleName.length < 3) {
-      throw new Error("Nome da role deve ter pelo menos 3 caracteres");
+      throw new Error(
+        "Nome do perfil de acesso deve ter pelo menos 3 caracteres"
+      );
     }
 
     if (
@@ -55,7 +57,7 @@ exports.create = async (req, res) => {
     });
 
     if (existingRole) {
-      throw new Error(`Role '${RoleName}' já existe`);
+      throw new Error(`Perfil de acesso '${RoleName}' já existe`);
     }
     // 3. Extrair e validar IDs das permissões
     const permissionIds = permissions.map((p) => p.id);
@@ -78,7 +80,7 @@ exports.create = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Role criada com sucesso",
+      message: "Perfil de acesso criado com sucesso",
       data: role,
     });
   } catch (error) {
@@ -101,9 +103,7 @@ exports.update = async (req, res) => {
       validate: true, // Validações do modelo
     });
     if (updated === 0) {
-      return res
-        .status(404)
-        .json({ error: "grupo de permissão não encontrado" });
+      return res.status(404).json({ error: "Perfil de acesso não encontrado" });
     }
     const updatedrole = await roles.findByPk(req.params.id);
     res.json(updatedrole);
@@ -146,7 +146,7 @@ exports.findAll = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Grupo de permissões processados com sucesso",
+      message: "Perfil de acesso processados com sucesso",
       data: allrole,
     });
   } catch (error) {
@@ -157,9 +157,7 @@ exports.findAll = async (req, res) => {
       parameters: error.parameters,
       timestamp: new Date(),
     });
-    res
-      .status(500)
-      .json({ error: "erro ao listar todos os grupo de permissão" });
+    res.status(500).json({ error: "erro ao listar todos os perfis de acesso" });
   }
 };
 
@@ -168,17 +166,15 @@ exports.findOne = async (req, res) => {
   try {
     const role = await roles.findByPk(req.params.id);
     if (!role) {
-      return res
-        .status(404)
-        .json({ error: "grupo de permissão não encontrado" });
+      return res.status(404).json({ error: "Perfil de acesso não encontrado" });
     }
     res.status(200).json({
       success: true,
-      message: "Grupo de permissões encontrado",
+      message: "Perfil de acesso encontrado",
       data: role,
     });
   } catch (error) {
-    res.status(500).json({ error: "erro buscar um grupo de permissão " });
+    res.status(500).json({ error: "erro buscar um perfil de acesso " });
 
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
@@ -195,9 +191,9 @@ exports.delete = async (req, res) => {
     if (deleted === 0) {
       return res
         .status(404)
-        .json({ success: false, error: "grupo de permissão não encontrado" });
+        .json({ success: false, error: "perfil de acesso não encontrado" });
     }
-    res.status(204).json("grupo de permissão removido com sucesso");
+    res.status(204).json("Perfil de acesso removido com sucesso");
   } catch (error) {
     res.status(500).json({ success: false, error: "erro ao remover grupo" });
 

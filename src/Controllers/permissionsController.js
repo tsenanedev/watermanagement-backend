@@ -74,7 +74,7 @@ async function bulkImportPermissions() {
       order: [["name", "ASC"]],
       raw: true,
     });
-
+    // console.log(existingPermissions);
     const existingNames = new Set(existingPermissions.map((p) => p.name));
     const newPermissions = permissionsArray.filter(
       (p) => !existingNames.has(p.name)

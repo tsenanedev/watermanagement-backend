@@ -3,6 +3,7 @@ const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 var SECRET_KEY = "leonelMatsinheRestFullApiFOrMatiAppWeb1865375hdyt";
+SECRET_KEY;
 
 async function login(req, res) {
   const { email, password } = req.body;
@@ -18,16 +19,25 @@ async function login(req, res) {
         include: [
           {
             association: "roles",
+            attributes: ["id", "name"],
             include: [
               {
+                association: "permissions",
+                required: false,
+                attributes: ["id", "name"],
+                through: { attributes: [] },
+              },
+              {
                 association: "regulators",
-                required: false, // Não é obrigatório ter um regulador
-                where: { "$roles.table_name$": "regulators" }, // Filtro para reguladores
+                required: false,
+                where: { "$roles.table_name$": "regulators" },
+                attributes: ["id", "name"],
               },
               {
                 association: "system_suppliers",
                 required: false, // Não é obrigatório ter um operador
                 where: { "$roles.table_name$": "system_suppliers" }, // Filtro para operadores
+                attributes: ["id", "name"],
               },
             ],
           },
@@ -56,18 +66,17 @@ async function login(req, res) {
             uid: user.uid,
             role: user.roles,
             createdAt: user.createdAt,
-            companyId: user.companyId,
           };
 
           // Gerar o token JWT
-          let token = jwt.sign({ uid: response }, SECRET_KEY, {
+          let token = jwt.sign(response, SECRET_KEY, {
             expiresIn: "1h",
           });
 
           // Retornar resposta com sucesso e o token
           return res.status(200).json({
             success: true,
-            user,
+            response,
             token,
           });
         });
