@@ -88,6 +88,13 @@ async function bulkImportPermissions() {
     return { Permissions: existingPermissions };
     // role.addPermissions(result);
   } catch (error) {
+    logger.error({
+      message: error.errors?.map((e) => e.message).join(" | ") || error.message,
+      stack: error.stack,
+      sql: error.sql,
+      parameters: error.parameters,
+      timestamp: new Date(),
+    });
     await transaction.rollback();
     throw new Error(`Falha na importação`);
   }

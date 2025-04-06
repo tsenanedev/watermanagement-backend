@@ -182,8 +182,11 @@ async function checkToken(req, res) {
     return res.status(401).send({ success: false, message: e });
   }
   const uid = decoded.uid;
+  let token = jwt.sign({ uid }, SECRET_KEY, {
+    expiresIn: "1h",
+  });
 
-  res.send(JSON.stringify({ success: true, token: uid }));
+  res.send(JSON.stringify({ success: true, token, user: uid }));
 }
 
 module.exports = {

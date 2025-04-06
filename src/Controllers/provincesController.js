@@ -45,7 +45,7 @@ exports.update = async (req, res) => {
 // Listar todos os provincees
 exports.findAll = async (req, res) => {
   try {
-    const allprovince = await province.findAll();
+    const allprovince = await provinces.findAll();
 
     res.json(allprovince);
   } catch (error) {

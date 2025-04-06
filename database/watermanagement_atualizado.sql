@@ -1,3 +1,5 @@
+use watermanagement;
+
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
@@ -61,7 +63,6 @@ CREATE TABLE `banks` (
 CREATE TABLE `billing` (
   `id` int(11) NOT NULL,
   `code` varchar(100) NOT NULL,
-  `createdAt` date NOT NULL,
   `readings_id` int(11) NOT NULL,
   `tarrif_type_id` int(11) NOT NULL,
   `forfeit` float NOT NULL,
@@ -85,14 +86,12 @@ CREATE TABLE `billing` (
 
 CREATE TABLE `billing_payment` (
   `id` int(11) NOT NULL,
-  `createdAt` date NOT NULL,
   `payments_id` int(11) NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
-
 --
 -- Table structure for table `branches`
 --
@@ -4315,7 +4314,6 @@ CREATE TABLE `neighbourhoods` (
   `companyId` int(11) NOT NULL,
   `districtId` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
-   `updatedAt` timestamp,
   `districts_id` int(11) NOT NULL,
    `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp
@@ -15049,7 +15047,6 @@ CREATE TABLE `readings` (
   `month` int(11) NOT NULL,
   `year` int(11) NOT NULL,
   `takenAt` text NOT NULL,
-  `createdAt` text NOT NULL,
   `consumptionPeriod` varchar(25) DEFAULT NULL,
   `staffName` varchar(100) DEFAULT NULL,
   `updatedBy` text DEFAULT NULL,
@@ -15072,6 +15069,7 @@ CREATE TABLE `regulators` (
   `id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
   `code` varchar(45) NOT NULL,
+  `operators_id` INT(11) NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -15131,8 +15129,8 @@ CREATE TABLE `roles` (
 --
 
 CREATE TABLE `roles_has_permissions` (
-  `role_id` int(11) NOT NULL,
-  `permission_id` int(11) NOT NULL,
+  `roles_id` int(11) NOT NULL,
+  `permissions_id` int(11) NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -15165,9 +15163,9 @@ CREATE TABLE `support` (
 CREATE TABLE `system_suppliers` (
   `id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
-  `district_id` int(11) NOT NULL,
-  `operator_id` int(11) NOT NULL,
-  `account_id` int(11) NOT NULL,
+  `districts_id` int(11) NOT NULL,
+  `operators_id` int(11) NOT NULL,
+  `accounts_id` int(11) NOT NULL,
    `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -15350,15 +15348,13 @@ CREATE TABLE `zones` (
 -- Indexes for table `accounts`
 --
 ALTER TABLE `accounts`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `accountNumber` (`accountNumber`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `banks`
 --
 ALTER TABLE `banks`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `accountNumber` (`accountNumber`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `billing`
