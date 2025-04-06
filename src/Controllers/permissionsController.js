@@ -84,8 +84,12 @@ async function bulkImportPermissions() {
       await permissions.bulkCreate(newPermissions, { ignoreDuplicates: true });
     }
     await transaction.commit();
-
-    return { Permissions: existingPermissions };
+    const Allpermissions = await permissions.findAll({
+      attributes: ["id", "name"],
+      order: [["name", "ASC"]],
+      raw: true,
+    });
+    return { Permissions: Allpermissions };
     // role.addPermissions(result);
   } catch (error) {
     logger.error({

@@ -4,7 +4,8 @@
     "password": "M#rci#2002",
     "database": "watermanagement",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "JWT_SECRET": ""
   },
   "test": {
     "username": "root",

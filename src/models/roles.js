@@ -53,6 +53,16 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "roles",
       // paranoid: true,
       timestamps: true,
+      scopes: {
+        tenant(tenantId) {
+          if (tenantId == null) {
+            return {};
+          }
+          return {
+            where: { table_name: "system_suppliers", table_id: tenantId },
+          };
+        },
+      },
     }
   );
 

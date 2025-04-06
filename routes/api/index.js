@@ -9,6 +9,12 @@ const systemSuppliersController = require("../../src/Controllers/systemSuppliers
 const authController = require("../../src/Controllers/authController");
 const permissionsController = require("../../src/Controllers/permissionsController");
 const rolesController = require("../../src/Controllers/rolesController");
+const authMiddleware = require("../../src/middlewares/authMiddleware");
+const metersController = require("../../src/Controllers/metersController");
+const {
+  hasPermission,
+  hasRole,
+} = require("../../src/middlewares/authorization");
 const jwtToken = require("./jwtController");
 
 const users = require("./users");
@@ -58,14 +64,69 @@ const pgfGenerator = require("./pdf_generator");
 router.use("/jwt", jwtToken);
 router.use("/users", users);
 
-router.get("/permissions", permissionsController.findAll);
-
+router.get(
+  "/permissions",
+  authMiddleware,
+  hasPermission("permissions-findAll"),
+  permissionsController.findAll
+);
+// CRUD meters
+router.post(
+  "/meters",
+  authMiddleware,
+  hasPermission("meters-findAll"),
+  metersController.create
+);
+router.get(
+  "/meters",
+  authMiddleware,
+  hasPermission("meters-findAll"),
+  metersController.findAll
+);
+router.get(
+  "/meters/:id",
+  authMiddleware,
+  hasPermission("meters-findAll"),
+  metersController.findOne
+);
+router.put(
+  "/meters/:id",
+  authMiddleware,
+  hasPermission("meters-findAll"),
+  metersController.update
+);
+router.delete("/meters/:id", metersController.delete);
 // CRUD roles
-router.post("/roles", rolesController.create);
-router.get("/roles", rolesController.findAll);
-router.get("/roles/:id", rolesController.findOne);
-router.put("/roles/:id", rolesController.update);
-router.delete("/roles/:id", rolesController.delete);
+router.post(
+  "/roles",
+  authMiddleware,
+  hasPermission("roles-create"),
+  rolesController.create
+);
+router.get(
+  "/roles",
+  authMiddleware,
+  hasPermission("roles-findAll"),
+  rolesController.findAll
+);
+router.get(
+  "/roles/:id",
+  authMiddleware,
+  hasPermission("roles-findOne"),
+  rolesController.findOne
+);
+router.put(
+  "/roles/:id",
+  authMiddleware,
+  hasPermission("roles-update"),
+  rolesController.update
+);
+router.delete(
+  "/roles/:id",
+  authMiddleware,
+  hasPermission("roles-delete"),
+  rolesController.delete
+);
 // CRUD regulators
 router.post("/regulators", regulatorsController.create);
 router.get("/regulators", regulatorsController.findAll);
