@@ -123,26 +123,28 @@ exports.update = async (req, res) => {
 // Listar todos os rolees
 exports.findAll = async (req, res) => {
   try {
-    const allrole = await roles.findAll({
-      include: [
-        {
-          association: "regulators",
-          required: false, // Não é obrigatório ter um regulador
-          where: { "$roles.table_name$": "regulators" }, // Filtro para reguladores
-        },
-        {
-          association: "system_suppliers",
-          required: false, // Não é obrigatório ter um operador
-          where: { "$roles.table_name$": "system_suppliers" }, // Filtro para operadores
-          include: [
-            {
-              association: "operators", // Alias definido na associação
-              attributes: ["id", "name"], // Campos específicos do operador (opcional)
-            },
-          ],
-        },
-      ],
-    });
+    const allrole = await roles
+      .scope({ method: ["tenant", req.tenet_id] })
+      .findAll({
+        include: [
+          {
+            association: "regulators",
+            required: false, // Não é obrigatório ter um regulador
+            where: { "$roles.table_name$": "regulators" }, // Filtro para reguladores
+          },
+          {
+            association: "system_suppliers",
+            required: false, // Não é obrigatório ter um operador
+            where: { "$roles.table_name$": "system_suppliers" }, // Filtro para operadores
+            include: [
+              {
+                association: "operators", // Alias definido na associação
+                attributes: ["id", "name"], // Campos específicos do operador (opcional)
+              },
+            ],
+          },
+        ],
+      });
 
     res.status(200).json({
       success: true,
@@ -195,7 +197,9 @@ exports.delete = async (req, res) => {
     }
     res.status(204).json("Perfil de acesso removido com sucesso");
   } catch (error) {
-    res.status(500).json({ success: false, error: "erro ao remover grupo" });
+    res
+      .status(500)
+      .json({ success: false, error: "erro ao remover Perfil de acesso" });
 
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,

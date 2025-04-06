@@ -9,6 +9,8 @@ const authMiddleware = async (req, res, next) => {
 
       if (decoded.role) {
         req.tenet_id = supplierId = decoded.role?.system_suppliers?.id || null;
+      }else{
+        req.tenet_id = null;
       }
       req.user = decoded;
       next();

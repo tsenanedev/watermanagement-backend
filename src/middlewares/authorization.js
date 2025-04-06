@@ -21,7 +21,6 @@ const hasPermission = (permissionName) => {
           .json({ error: "Nenhum perfil de acesso atribuído" });
       }
       const permissions = userRole.permissions?.map((p) => p.name) || [];
-      console.log(permissions);
       if (!permissions.includes(permissionName)) {
         return res.status(403).json({ error: "Acesso Negado" });
       }

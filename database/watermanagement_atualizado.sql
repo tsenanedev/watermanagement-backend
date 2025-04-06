@@ -2743,10 +2743,12 @@ INSERT INTO `districts` (`id`, `name`, `provinceId`) VALUES
 
 CREATE TABLE `meters` (
   `id` int(11) NOT NULL,
-  `meterNumber` varchar(50) NOT NULL,
+  `number` varchar(50) NOT NULL,
+  `type` varchar(15) NOT NULL,
   `diameter` varchar(15) NOT NULL,
+  `tenet_id` int(15) NOT NULL,
   `description` text NOT NULL,
-  `status` int(11) NOT NULL DEFAULT 0,
+  `status` varchar(20) NOT NULL DEFAULT ,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
