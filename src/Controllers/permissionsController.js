@@ -28,7 +28,7 @@ exports.findAll = async (req, res) => {
   }
 };
 loadControllerMethods = () => {
-  const ignoredControllers = ["auth"]; // Controladores a ignorar
+  const ignoredControllers = ["auth", "provinces", "districts"]; // Controladores a ignorar
 
   const ignoredMethods = [
     "permissions-bulkImportPermissions",

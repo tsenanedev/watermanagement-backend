@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "role_id",
         otherKey: "permission_id",
         as: "permissions",
+        onDelete: "CASCADE",
+        hooks: true,
       });
       roles.hasMany(models.users, {
         foreignKey: "role_id", // Chave estrangeira que liga Roles a Users

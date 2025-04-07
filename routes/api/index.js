@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 // Importar todas as rotas
+const {
+  hasPermission,
+  hasRole,
+} = require("../../src/middlewares/authorization");
 const regulatorsController = require("../../src/Controllers/regulatorsController");
 const operatorsControllers = require("../../src/Controllers/operatorsController");
 const provincesController = require("../../src/Controllers/provincesController");
@@ -11,10 +15,8 @@ const permissionsController = require("../../src/Controllers/permissionsControll
 const rolesController = require("../../src/Controllers/rolesController");
 const authMiddleware = require("../../src/middlewares/authMiddleware");
 const metersController = require("../../src/Controllers/metersController");
-const {
-  hasPermission,
-  hasRole,
-} = require("../../src/middlewares/authorization");
+const districtsController = require("../../src/Controllers/districtsController");
+
 const jwtToken = require("./jwtController");
 
 const users = require("./users");
@@ -128,33 +130,116 @@ router.delete(
   rolesController.delete
 );
 // CRUD regulators
-router.post("/regulators", regulatorsController.create);
-router.get("/regulators", regulatorsController.findAll);
-router.get("/regulators/:id", regulatorsController.findOne);
-router.put("/regulators/:id", regulatorsController.update);
-router.delete("/regulators/:id", regulatorsController.delete);
+router.post(
+  "/regulators",
+  hasPermission("regulators-create"),
+  regulatorsController.create
+);
+router.get(
+  "/regulators",
+  hasPermission("regulators-findAll"),
+  regulatorsController.findAll
+);
+router.get(
+  "/regulators/:id",
+  hasPermission("regulators-findOne"),
+  regulatorsController.findOne
+);
+router.put(
+  "/regulators/:id",
+  hasPermission("regulators-update"),
+  regulatorsController.update
+);
+router.delete(
+  "/regulators/:id",
+  hasPermission("regulators-delete"),
+  regulatorsController.delete
+);
 // CRUD regulators
-router.post("/operators", operatorsControllers.create);
-router.get("/operators", operatorsControllers.findAll);
-router.get("/operators/:id", operatorsControllers.findOne);
-router.put("/operators/:id", operatorsControllers.update);
-router.delete("/operators/:id", operatorsControllers.delete);
+router.post(
+  "/operators",
+  authMiddleware,
+  hasPermission("operators-create"),
+  operatorsControllers.create
+);
+router.get(
+  "/operators",
+  authMiddleware,
+  hasPermission("operators-findAll"),
+  operatorsControllers.findAll
+);
+router.get(
+  "/operators/:id",
+  authMiddleware,
+  hasPermission("operators-findOne"),
+  operatorsControllers.findOne
+);
+router.put(
+  "/operators/:id",
+  authMiddleware,
+  hasPermission("operators-update"),
+  operatorsControllers.update
+);
+router.delete(
+  "/operators/:id",
+  authMiddleware,
+  hasPermission("operators-delete"),
+  operatorsControllers.delete
+);
 // CRUD provinces
-router.post("/provinces", provincesController.create);
-router.get("/provinces", provincesController.findAll);
-router.get("/provinces/:id", provincesController.findOne);
-router.put("/provinces/:id", provincesController.update);
+router.post("/provinces", authMiddleware, provincesController.create);
+router.get("/provinces", authMiddleware, provincesController.findAll);
+router.get("/provinces/:id", authMiddleware, provincesController.findOne);
+router.put("/provinces/:id", authMiddleware, provincesController.update);
 router.delete("/provinces/:id", provincesController.delete);
+// CRUD districts
+router.post("/districts", authMiddleware, districtsController.create);
+router.get(
+  "/districts/:province_id",
+  authMiddleware,
+  districtsController.findAll
+);
+router.put("/districts/:id", authMiddleware, districtsController.update);
+router.delete("/districts/:id", authMiddleware, districtsController.delete);
 // CRUD system_suppliers
-router.post("/system_suppliers", systemSuppliersController.create);
-router.get("/system_suppliers", systemSuppliersController.findAll);
-router.get("/system_suppliers/:id", systemSuppliersController.findOne);
-router.put("/system_suppliers/:id", systemSuppliersController.update);
-router.delete("/system_suppliers/:id", systemSuppliersController.delete);
+router.post(
+  "/system_suppliers",
+  authMiddleware,
+  hasPermission("systemSuppliers-create"),
+  systemSuppliersController.create
+);
+router.get(
+  "/system_suppliers",
+  authMiddleware,
+  hasPermission("systemSuppliers-findAll"),
+  systemSuppliersController.findAll
+);
+router.get(
+  "/system_suppliers/:id",
+  authMiddleware,
+  hasPermission("systemSuppliers-findOne"),
+  systemSuppliersController.findOne
+);
+router.put(
+  "/system_suppliers/:id",
+  authMiddleware,
+  hasPermission("systemSuppliers-delete"),
+  systemSuppliersController.update
+);
+router.delete(
+  "/system_suppliers/:id",
+  authMiddleware,
+  hasPermission("systemSuppliers-delete"),
+  systemSuppliersController.delete
+);
 //login user
 router.post("/userLogin", authController.login);
 router.get("/checkToken", authController.checkToken);
-router.post("/users/chenge/pass", authController.updatePassword);
+router.post(
+  "/users/chenge/pass",
+  authMiddleware,
+  authController.updatePassword
+);
 
 // router.use("/user_login", user_login);
 router.use("/companies", company);

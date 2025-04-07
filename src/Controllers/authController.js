@@ -2,8 +2,6 @@ const { users: Users } = require("../models");
 const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-var SECRET_KEY = "leonelMatsinheRestFullApiFOrMatiAppWeb1865375hdyt";
-SECRET_KEY;
 
 async function login(req, res) {
   const { email, password } = req.body;
@@ -69,7 +67,7 @@ async function login(req, res) {
           };
 
           // Gerar o token JWT
-          let token = jwt.sign(response, SECRET_KEY, {
+          let token = jwt.sign(response, process.env.JWT_SECRET, {
             expiresIn: "1h",
           });
 
@@ -112,7 +110,7 @@ async function updatePassword(req, res) {
   var authorization = req.headers.authorization,
     decoded;
   try {
-    decoded = jwt.verify(authorization.split(" ")[1], SECRET_KEY);
+    decoded = jwt.verify(authorization.split(" ")[1], process.env.JWT_SECRET);
   } catch (e) {
     return res.status(401).send("unauthorized");
   }
