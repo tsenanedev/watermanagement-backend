@@ -99,7 +99,11 @@ exports.delete = async (req, res) => {
     if (deleted === 0) {
       return res.status(404).json({ error: "Operator não encontrado" });
     }
-    res.status(204).json("Operator removido com sucesso");
+    res.status(200).json({
+      success: true,
+      message: "Operator removido com sucesso",
+      data: null,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
 

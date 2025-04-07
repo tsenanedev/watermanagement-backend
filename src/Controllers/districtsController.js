@@ -1,10 +1,9 @@
-const { provinces: provinces } = require("../models");
-const { Op } = require("sequelize");
+const { districts: districts } = require("../models");
 
 exports.create = async (req, res) => {
   try {
-    const province = await provinces.create(req.body);
-    res.status(201).json(province);
+    const district = await districts.create(req.body);
+    res.status(201).json(district);
   } catch (error) {
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
@@ -14,21 +13,20 @@ exports.create = async (req, res) => {
       timestamp: new Date(),
     });
 
-    res.status(400).json({ error: "Falha ao criar provincia" });
+    res.status(400).json({ error: "Falha ao criar Distrito" });
   }
 };
 
 exports.update = async (req, res) => {
   try {
-    const [updated] = await provinces.update(req.body, {
-      where: { id: req.params.id },
+    const [updated] = await districts.update(req.body, {
       validate: true, // Validações do modelo
     });
     if (updated === 0) {
-      return res.status(404).json({ error: "provincia não encontrado" });
+      return res.status(404).json({ error: "Distrito não encontrado" });
     }
-    const updatedprovince = await provinces.findByPk(req.params.id);
-    res.json(updatedprovince);
+    const updateddistrict = await districts.findByPk(req.params.id);
+    res.json(updateddistrict);
   } catch (error) {
     res.status(400).json({ error: "Falha ao actualizar" });
 
@@ -42,14 +40,16 @@ exports.update = async (req, res) => {
   }
 };
 
-// Listar todos os provincees
+// Listar todos os districtes
 exports.findAll = async (req, res) => {
   try {
-    const allprovince = await province.findAll();
+    const alldistrict = await district.findAll({
+      where: { id: req.params.province_id },
+    });
 
-    res.json(allprovince);
+    res.json(alldistrict);
   } catch (error) {
-    res.status(500).json({ error: "erro ao listar todos os provincia" });
+    res.status(500).json({ error: "erro ao listar todos os Distrito" });
 
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
@@ -61,16 +61,16 @@ exports.findAll = async (req, res) => {
   }
 };
 
-// Buscar um province por ID
+// Buscar um district por ID
 exports.findOne = async (req, res) => {
   try {
-    const province = await provinces.findByPk(req.params.id);
-    if (!province) {
-      return res.status(404).json({ error: "provincia não encontrado" });
+    const district = await districts.findByPk(req.params.id);
+    if (!district) {
+      return res.status(404).json({ error: "Distrito não encontrado" });
     }
-    res.json(province);
+    res.json(district);
   } catch (error) {
-    res.status(500).json({ error: "erro buscar um provincia por ID" });
+    res.status(500).json({ error: "erro buscar um Distrito por ID" });
 
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
@@ -83,13 +83,13 @@ exports.findOne = async (req, res) => {
 };
 exports.delete = async (req, res) => {
   try {
-    const deleted = await provinces.destroy({ where: { id: req.params.id } });
+    const deleted = await districts.destroy({ where: { id: req.params.id } });
     if (deleted === 0) {
-      return res.status(404).json({ error: "provincia não encontrado" });
+      return res.status(404).json({ error: "Distrito não encontrado" });
     }
     res.status(200).json({
       success: true,
-      message: "Provincia removido com sucesso",
+      message: "Distrito removido com sucesso",
       data: null,
     });
   } catch (error) {

@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 // globals.js
 const logger = require("./config/logger"); // Importa o logger
 global.logger = logger; // Define a variável global
-
+require("dotenv").config();
 // DB configuration
 config = require("./db");
 let dbOptions = {
