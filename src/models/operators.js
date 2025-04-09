@@ -14,6 +14,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "operator_id",
         as: "system_suppliers", // Nome da associação
       });
+      operators.hasMany(models.contact_persons, {
+        foreignKey: "table_id",
+        constraints: false,
+        scope: {
+          table_name: "operators",
+        },
+        as: "contact_persons",
+      });
     }
   }
   operators.init(
@@ -21,16 +29,21 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: {
+          args: true,
+          msg: "O nome já está em uso",
+        },
         validate: {
           notEmpty: {
-            msg: "O nome do operator é obrigatório",
+            msg: "O nome não pode ser vazio",
           },
           len: {
-            args: [3, 100],
-            msg: "O nome deve ter entre 3 e 100 caracteres",
+            args: [3], // O nome deve ter no mínimo 3 caracteres
+            msg: "O nome deve ter no mínimo 3 caracteres",
           },
         },
       },
+
       code: {
         type: DataTypes.STRING,
         unique: {
@@ -48,15 +61,15 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "operators",
       paranoid: true,
       hooks: {
-        beforeValidate: (regulator) => {
+        beforeValidate: (operator) => {
           // Gera o código AUTOMATICAMENTE (se não existir)
-          if (!regulator.code) {
-            const prefix = regulator.name
+          if (!operator.code) {
+            const prefix = operator.name
               .substring(0, 3)
               .toUpperCase()
               .replace(/\s+/g, ""); // Remove espaços (ex: "ANV ISA" → "ANV")
             const randomNum = Math.floor(1000 + Math.random() * 9000); // 1000-9999
-            regulator.code = `${prefix}-${randomNum}`;
+            operator.code = `${prefix}-${randomNum}`;
           }
         },
       },

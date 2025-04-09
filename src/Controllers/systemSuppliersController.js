@@ -1,9 +1,16 @@
-const { system_suppliers: system_suppliers } = require("../models");
+const { system_suppliers, contact_persons } = require("../models");
 const { Op } = require("sequelize");
 
 exports.create = async (req, res) => {
+  const transaction = await system_suppliers.sequelize.transaction();
   try {
-    const requiredFields = ["name", "district_id", "operator_id", "account_id"];
+    const { name, person_name, person_email, person_phone } = req.body;
+    const requiredFields = [
+      "name",
+      "district_id",
+      "system_supplier_id",
+      "account_id",
+    ];
     for (const field of requiredFields) {
       if (!req.body[field]) {
         return res
@@ -11,7 +18,35 @@ exports.create = async (req, res) => {
           .json({ error: `O campo ${field} é obrigatório.` });
       }
     }
-    const system_supplier = await system_suppliers.create(req.body);
+    const system_supplier = await system_suppliers.create(
+      req.body,
+      {
+        include: [
+          {
+            association: "contact_persons",
+            required: false,
+            attributes: ["id", "name", "phone_number", "email"],
+          },
+        ],
+      },
+      { transaction }
+    );
+    if (system_supplier) {
+      if (person_name) {
+        await contact_persons.create(
+          {
+            name: person_name,
+            email: person_email,
+            phone_number: person_phone,
+            table_name: "system_suppliers",
+            table_id: system_supplier.id,
+          },
+          { transaction }
+        );
+      }
+    }
+    await system_supplier.reload({ transaction });
+    await transaction.commit();
     res.status(201).json(system_supplier);
   } catch (error) {
     logger.error({
@@ -27,20 +62,59 @@ exports.create = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+  const { person_name, person_email, person_phone } = req.body;
+  const transaction = await system_suppliers.sequelize.transaction();
   try {
-    const [updated] = await system_suppliers.update(req.body, {
+    const system_supplier = await system_suppliers.findOne({
       where: { id: req.params.id },
-      validate: true, // Validações do modelo
+      include: [
+        {
+          association: "contact_persons",
+          required: false,
+          attributes: ["id", "name", "phone_number", "email"],
+        },
+      ],
+      transaction,
     });
-    if (updated === 0) {
+
+    if (!system_supplier) {
       return res
         .status(404)
-        .json({ error: "Sistema de abastecimento não encontrado" });
+        .json({ error: "Sistema de Abastecimento não encontrado" });
     }
-    const updatedsystem_supplier = await system_suppliers.findByPk(
-      req.params.id
-    );
-    res.json(updatedsystem_supplier);
+
+    // Atualizar o regulador
+    await system_supplier.update(req.body, { transaction });
+
+    // Atualizar ou criar a pessoa de contacto, se necessário
+    if (person_name) {
+      const contactPerson = system_supplier.contact_persons[0]; // Assume que é um só contacto
+
+      if (contactPerson) {
+        await contactPerson.update(
+          {
+            name: person_name,
+            email: person_email,
+            phone_number: person_phone,
+          },
+          { transaction }
+        );
+      } else {
+        await contact_persons.create(
+          {
+            name: person_name,
+            email: person_email,
+            phone_number: person_phone,
+            table_name: "system_suppliers",
+            table_id: system_supplier.id,
+          },
+          { transaction }
+        );
+      }
+    }
+    await system_supplier.reload({ transaction });
+    await transaction.commit();
+    return res.json(system_supplier);
   } catch (error) {
     res.status(400).json({ error: "Falha ao actualizar" });
 

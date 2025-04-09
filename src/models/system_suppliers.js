@@ -8,7 +8,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      system_suppliers.hasMany(models.contact_persons, {
+        foreignKey: "table_id",
+        constraints: false,
+        scope: {
+          table_name: "contact_persons",
+        },
+        as: "contact_persons",
+      });
       system_suppliers.belongsTo(models.operators, {
         foreignKey: "operator_id",
         as: "operators",

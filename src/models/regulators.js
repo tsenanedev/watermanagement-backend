@@ -8,14 +8,21 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
       regulators.hasMany(models.roles, {
         foreignKey: "table_id",
         constraints: false,
         scope: {
           table_name: "regulators",
         },
-        as: "roles", // Nome da associação
+        as: "roles",
+      });
+      regulators.hasMany(models.contact_persons, {
+        foreignKey: "table_id",
+        constraints: false,
+        scope: {
+          table_name: "regulators",
+        },
+        as: "contact_persons",
       });
     }
   }

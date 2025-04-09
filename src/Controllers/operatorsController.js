@@ -1,10 +1,43 @@
-const { operators: operators } = require("../models");
+const { operators, contact_persons } = require("../models");
 
 exports.create = async (req, res) => {
+  const transaction = await operators.sequelize.transaction();
   try {
-    const operator = await operators.create(req.body);
+    const { name, person_name, person_email, person_phone } = req.body;
+    const operator = await operators.create(
+      req.body,
+      {
+        include: [
+          {
+            association: "contact_persons",
+            required: false,
+            attributes: ["id", "name", "phone_number", "email"],
+          },
+        ],
+      },
+      { transaction }
+    );
+    if (operator) {
+      if (person_name) {
+        await contact_persons.create({
+          name: person_name,
+          email: person_email,
+          phone_number: person_phone,
+          table_name: "operators",
+          table_id: operator.id,
+        });
+      }
+    }
+    await operator.reload({ transaction });
+    await transaction.commit();
     res.status(201).json(operator);
   } catch (error) {
+    if (error.name === "SequelizeValidationError") {
+      const errorMessages = error.errors.map((e) => e.message).join(" | ");
+      return res
+        .status(400)
+        .json({ error: `Falha na validação: ${errorMessages}` });
+    }
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
       stack: error.stack,
@@ -12,22 +45,63 @@ exports.create = async (req, res) => {
       parameters: error.parameters,
       timestamp: new Date(),
     });
-
-    res.status(400).json({ error: "Falha ao criar Operator" });
+    await transaction.rollback();
+    res.status(400).json({ error: "Falha ao criar operador" });
   }
 };
 
 exports.update = async (req, res) => {
+  const { person_name, person_email, person_phone } = req.body;
+  const transaction = await operators.sequelize.transaction();
   try {
-    const [updated] = await operators.update(req.body, {
+    const operator = await operators.findOne({
       where: { id: req.params.id },
-      validate: true, // Validações do modelo
+      include: [
+        {
+          association: "contact_persons",
+          required: false,
+          attributes: ["id", "name", "phone_number", "email"],
+        },
+      ],
+      transaction,
     });
-    if (updated === 0) {
-      return res.status(404).json({ error: "Operator não encontrado" });
+
+    if (!operator) {
+      return res.status(404).json({ error: "Regulador não encontrado" });
     }
-    const updatedOperator = await operators.findByPk(req.params.id);
-    res.json(updatedOperator);
+
+    // Atualizar o regulador
+    await operator.update(req.body, { transaction });
+
+    // Atualizar ou criar a pessoa de contacto, se necessário
+    if (person_name) {
+      const contactPerson = operator.contact_persons[0]; // Assume que é um só contacto
+
+      if (contactPerson) {
+        await contactPerson.update(
+          {
+            name: person_name,
+            email: person_email,
+            phone_number: person_phone,
+          },
+          { transaction }
+        );
+      } else {
+        await contact_persons.create(
+          {
+            name: person_name,
+            email: person_email,
+            phone_number: person_phone,
+            table_name: "operators",
+            table_id: operator.id,
+          },
+          { transaction }
+        );
+      }
+    }
+    await operator.reload({ transaction });
+    await transaction.commit();
+    return res.json(operator);
   } catch (error) {
     res.status(400).json({ error: "Falha ao actualizar" });
 
