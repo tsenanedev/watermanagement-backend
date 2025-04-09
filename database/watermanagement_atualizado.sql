@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 07, 2025 at 07:09 PM
+-- Generation Time: Apr 09, 2025 at 10:42 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -160,6 +160,49 @@ CREATE TABLE `companies` (
 
 INSERT INTO `companies` (`id`, `name`, `email`, `website`, `nuit`, `phone`, `address`, `status`, `bankAccount`, `bankAccount2`, `nib`, `nib2`, `createdAt`) VALUES
 (1, 'TSENANE LDA', 'E-mail: sfunhalouro@tsenane.co.mz * info@tsenane.co.mz', 'https://tsenane.co.mz', '400154694', '+258 86 313 2801 - Funhalouro', 'Av. Ahmed Sekou Touré 1919 - 1 Andar Esquerdo - Maputo', '1', 'Nº Conta: 1210773510001', 'Nº Conta: 1210773510002', 'NIB: 0008.0000 1210.7735.10180', 'NIB: 0008.0000.1210.7735.10277', '2022-06-25 07:22:53');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `contact_persons`
+--
+
+CREATE TABLE `contact_persons` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `phone_number` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `table_name` varchar(255) DEFAULT NULL,
+  `table_id` int(11) DEFAULT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Dumping data for table `contact_persons`
+--
+
+INSERT INTO `contact_persons` (`id`, `name`, `phone_number`, `email`, `table_name`, `table_id`, `createdAt`, `updatedAt`) VALUES
+(1, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 6, '2025-04-09 18:17:39', '2025-04-09 18:17:39'),
+(2, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 7, '2025-04-09 18:58:23', '2025-04-09 18:58:23'),
+(3, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 8, '2025-04-09 19:00:30', '2025-04-09 19:00:30'),
+(4, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 9, '2025-04-09 19:00:54', '2025-04-09 19:00:54'),
+(5, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 10, '2025-04-09 19:03:23', '2025-04-09 19:03:23'),
+(6, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 11, '2025-04-09 19:03:38', '2025-04-09 19:03:38'),
+(7, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 12, '2025-04-09 19:03:40', '2025-04-09 19:03:40'),
+(8, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 13, '2025-04-09 19:04:18', '2025-04-09 19:04:18'),
+(9, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 14, '2025-04-09 19:05:10', '2025-04-09 19:05:10'),
+(10, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 15, '2025-04-09 19:07:09', '2025-04-09 19:07:09'),
+(11, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 16, '2025-04-09 19:08:36', '2025-04-09 19:08:36'),
+(12, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 17, '2025-04-09 19:10:53', '2025-04-09 19:10:53'),
+(13, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 18, '2025-04-09 19:11:11', '2025-04-09 19:11:11'),
+(14, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 19, '2025-04-09 19:11:59', '2025-04-09 19:11:59'),
+(15, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 30, '2025-04-09 19:52:27', '2025-04-09 19:52:27'),
+(16, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 31, '2025-04-09 20:02:27', '2025-04-09 20:02:27'),
+(17, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 32, '2025-04-09 20:02:45', '2025-04-09 20:02:45'),
+(18, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'regulators', 7, '2025-04-09 20:11:54', '2025-04-09 20:11:54'),
+(19, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'regulators', 3, '2025-04-09 20:23:47', '2025-04-09 20:23:47'),
+(20, 'Jose Carlos', '843783137', 'josecarlos@gmail.com', 'operators', 3, '2025-04-09 20:29:29', '2025-04-09 20:29:29');
 
 -- --------------------------------------------------------
 
@@ -4348,7 +4391,36 @@ CREATE TABLE `operators` (
 INSERT INTO `operators` (`id`, `name`, `code`, `createdAt`, `updatedAt`, `deletedAt`) VALUES
 (1, 'teste1', '', '2025-03-29 19:16:23', '2025-03-29 19:16:23', NULL),
 (2, 'teste2', '', '2025-03-29 19:16:29', '2025-03-29 19:16:29', NULL),
-(3, 'teste2', '', '2025-03-29 19:16:31', '2025-03-29 19:16:31', NULL);
+(3, 'WALI1', '', '2025-04-09 20:30:39', '2025-04-09 20:30:39', NULL),
+(4, 'Colins', 'COL-6757', '2025-04-09 18:16:11', '2025-04-09 18:16:11', NULL),
+(5, 'Colins', 'COL-6441', '2025-04-09 18:17:07', '2025-04-09 18:17:07', NULL),
+(6, 'Colins', 'COL-9201', '2025-04-09 18:17:39', '2025-04-09 18:17:39', NULL),
+(7, 'Colins', 'COL-5516', '2025-04-09 18:58:23', '2025-04-09 18:58:23', NULL),
+(8, 'Colins', 'COL-9349', '2025-04-09 19:00:30', '2025-04-09 19:00:30', NULL),
+(9, 'Colins', 'COL-5765', '2025-04-09 19:00:54', '2025-04-09 19:00:54', NULL),
+(10, 'Colins', 'COL-1416', '2025-04-09 19:03:23', '2025-04-09 19:03:23', NULL),
+(11, 'Colins', 'COL-2018', '2025-04-09 19:03:38', '2025-04-09 19:03:38', NULL),
+(12, 'Colins', 'COL-3005', '2025-04-09 19:03:40', '2025-04-09 19:03:40', NULL),
+(13, 'Colins', 'COL-9174', '2025-04-09 19:04:18', '2025-04-09 19:04:18', NULL),
+(14, 'Colins', 'COL-6059', '2025-04-09 19:05:10', '2025-04-09 19:05:10', NULL),
+(15, 'Colins', 'COL-3488', '2025-04-09 19:07:09', '2025-04-09 19:07:09', NULL),
+(16, 'Colins', 'COL-5613', '2025-04-09 19:08:36', '2025-04-09 19:08:36', NULL),
+(17, 'Colins', 'COL-2793', '2025-04-09 19:10:52', '2025-04-09 19:10:52', NULL),
+(18, 'Colins', 'COL-5764', '2025-04-09 19:11:11', '2025-04-09 19:11:11', NULL),
+(19, 'Colins', 'COL-9648', '2025-04-09 19:11:59', '2025-04-09 19:11:59', NULL),
+(20, 'Colins', 'COL-3069', '2025-04-09 19:31:18', '2025-04-09 19:31:18', NULL),
+(21, 'Colins', 'COL-9298', '2025-04-09 19:38:52', '2025-04-09 19:38:52', NULL),
+(22, 'Colins', 'COL-5392', '2025-04-09 19:44:41', '2025-04-09 19:44:41', NULL),
+(23, 'Colins', 'COL-7330', '2025-04-09 19:45:58', '2025-04-09 19:45:58', NULL),
+(24, 'Colins', 'COL-4239', '2025-04-09 19:46:40', '2025-04-09 19:46:40', NULL),
+(25, 'Colins', 'COL-4686', '2025-04-09 19:49:22', '2025-04-09 19:49:22', NULL),
+(26, 'Colins', 'COL-3743', '2025-04-09 19:50:29', '2025-04-09 19:50:29', NULL),
+(27, 'Colins', 'COL-1561', '2025-04-09 19:50:36', '2025-04-09 19:50:36', NULL),
+(28, 'Colins', 'COL-6125', '2025-04-09 19:52:11', '2025-04-09 19:52:11', NULL),
+(29, 'Colins', 'COL-2437', '2025-04-09 19:52:20', '2025-04-09 19:52:20', NULL),
+(30, 'Colins', 'COL-9357', '2025-04-09 19:52:27', '2025-04-09 19:52:27', NULL),
+(31, 'Colins', 'COL-4614', '2025-04-09 20:02:27', '2025-04-09 20:02:27', NULL),
+(32, 'Colins', 'COL-1282', '2025-04-09 20:02:45', '2025-04-09 20:02:45', NULL);
 
 -- --------------------------------------------------------
 
@@ -15134,8 +15206,10 @@ CREATE TABLE `regulators` (
 
 INSERT INTO `regulators` (`id`, `code`, `name`, `createdAt`, `updatedAt`, `deletedAt`) VALUES
 (2, 'TSE-3688', 'tsenane', '2025-03-29 18:14:49', '2025-03-29 18:14:49', NULL),
-(3, 'WAL-1100', 'Walifi', '2025-03-29 18:18:51', '2025-03-29 18:18:51', NULL),
-(4, 'AUR-2495', 'Aura', '2025-03-29 18:19:01', '2025-03-29 18:19:01', NULL);
+(3, 'WAL-1100', 'WALI', '2025-04-09 20:23:47', '2025-04-09 20:23:47', NULL),
+(4, 'AUR-2495', 'Aura', '2025-03-29 18:19:01', '2025-03-29 18:19:01', NULL),
+(6, 'COL-7258', 'Colins', '2025-04-09 20:11:36', '2025-04-09 20:11:36', NULL),
+(7, 'COL-9252', 'Colins', '2025-04-09 20:11:54', '2025-04-09 20:11:54', NULL);
 
 -- --------------------------------------------------------
 
@@ -15215,6 +15289,8 @@ INSERT INTO `roles_has_permissions` (`role_id`, `permission_id`, `createdAt`, `u
 (1, 363, '2025-04-03 18:19:37', '2025-04-03 18:19:37'),
 (1, 364, '2025-04-03 18:19:37', '2025-04-03 18:19:37'),
 (1, 365, '2025-04-03 18:19:37', '2025-04-03 18:19:37'),
+(1, 371, NULL, NULL),
+(1, 372, NULL, NULL),
 (1, 381, '2025-04-03 18:19:37', '2025-04-03 18:19:37'),
 (1, 383, '2025-04-03 18:19:37', '0000-00-00 00:00:00'),
 (1, 384, NULL, NULL),
@@ -15229,6 +15305,36 @@ INSERT INTO `roles_has_permissions` (`role_id`, `permission_id`, `createdAt`, `u
 (11, 363, '2025-04-07 17:04:38', '2025-04-07 17:04:38'),
 (11, 364, '2025-04-07 17:04:38', '2025-04-07 17:04:38'),
 (11, 365, '2025-04-07 17:04:38', '2025-04-07 17:04:38');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sequelizemeta`
+--
+
+CREATE TABLE `sequelizemeta` (
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `sequelizemeta`
+--
+
+INSERT INTO `sequelizemeta` (`name`) VALUES
+('20250328202315-create-users.js'),
+('20250328232609-create-roles.js'),
+('20250328233028-create-permissions.js'),
+('20250328233304-create-roles-has-permissions.js'),
+('20250328233349-create-operators.js'),
+('20250328233411-create-regulators.js'),
+('20250330175647-create-system-suppliers.js'),
+('20250330180006-create-districts.js'),
+('20250330180216-create-provinces.js'),
+('20250330180343-create-neighbourhoods.js'),
+('20250402181816-create-accounts.js'),
+('20250402182210-create-banks.js'),
+('20250405180151-create-meters.js'),
+('20250408180437-create-pessoa-contacto.js');
 
 -- --------------------------------------------------------
 
@@ -15485,6 +15591,12 @@ ALTER TABLE `companies`
   ADD UNIQUE KEY `nuit` (`nuit`);
 
 --
+-- Indexes for table `contact_persons`
+--
+ALTER TABLE `contact_persons`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `customerbalance`
 --
 ALTER TABLE `customerbalance`
@@ -15609,6 +15721,13 @@ ALTER TABLE `roles_has_permissions`
   ADD KEY `fk_roles_has_permissions_roles1_idx` (`role_id`);
 
 --
+-- Indexes for table `sequelizemeta`
+--
+ALTER TABLE `sequelizemeta`
+  ADD PRIMARY KEY (`name`),
+  ADD UNIQUE KEY `name` (`name`);
+
+--
 -- Indexes for table `support`
 --
 ALTER TABLE `support`
@@ -15700,6 +15819,12 @@ ALTER TABLE `companies`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `contact_persons`
+--
+ALTER TABLE `contact_persons`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
 -- AUTO_INCREMENT for table `customerbalance`
 --
 ALTER TABLE `customerbalance`
@@ -15739,7 +15864,7 @@ ALTER TABLE `neighbourhoods`
 -- AUTO_INCREMENT for table `operators`
 --
 ALTER TABLE `operators`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -15787,7 +15912,7 @@ ALTER TABLE `readings`
 -- AUTO_INCREMENT for table `regulators`
 --
 ALTER TABLE `regulators`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `reportnotes`
