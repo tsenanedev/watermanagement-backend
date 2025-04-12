@@ -32,7 +32,10 @@ exports.create = async (req, res) => {
     await transaction.commit();
     res.status(201).json(operator);
   } catch (error) {
-    if (error.name === "SequelizeValidationError") {
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
       const errorMessages = error.errors.map((e) => e.message).join(" | ");
       return res
         .status(400)
@@ -70,12 +73,10 @@ exports.update = async (req, res) => {
       return res.status(404).json({ error: "Regulador não encontrado" });
     }
 
-    // Atualizar o regulador
     await operator.update(req.body, { transaction });
 
-    // Atualizar ou criar a pessoa de contacto, se necessário
     if (person_name) {
-      const contactPerson = operator.contact_persons[0]; // Assume que é um só contacto
+      const contactPerson = operator.contact_persons[0];
 
       if (contactPerson) {
         await contactPerson.update(
@@ -103,8 +104,15 @@ exports.update = async (req, res) => {
     await transaction.commit();
     return res.json(operator);
   } catch (error) {
-    res.status(400).json({ error: "Falha ao actualizar" });
-
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
+      const errorMessages = error.errors.map((e) => e.message).join(" | ");
+      return res
+        .status(400)
+        .json({ error: `Falha na validação: ${errorMessages}` });
+    }
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
       stack: error.stack,
@@ -112,6 +120,7 @@ exports.update = async (req, res) => {
       parameters: error.parameters,
       timestamp: new Date(),
     });
+    res.status(400).json({ error: "Falha ao actualizar" });
   }
 };
 
@@ -135,8 +144,6 @@ exports.findAll = async (req, res) => {
 
     res.json(alloperator);
   } catch (error) {
-    res.status(500).json({ error: "erro ao listar todos os Operatores" });
-
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
       stack: error.stack,
@@ -144,6 +151,7 @@ exports.findAll = async (req, res) => {
       parameters: error.parameters,
       timestamp: new Date(),
     });
+    res.status(500).json({ error: "erro ao listar todos os Operatores" });
   }
 };
 

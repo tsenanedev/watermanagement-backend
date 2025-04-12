@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-
+      address: DataTypes.STRING,
       code: {
         type: DataTypes.STRING,
         unique: {

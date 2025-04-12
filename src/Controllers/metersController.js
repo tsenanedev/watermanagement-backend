@@ -2,7 +2,7 @@ const { meters: meters } = require("../models");
 
 exports.create = async (req, res) => {
   try {
-    req.body.tenant = req.tenet_id;
+    req.body.tenant = req.tenant;
     const meter = await meters.create(req.body);
 
     res.status(200).json({
@@ -25,7 +25,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    req.body.tenant = req.tenet_id;
+    req.body.tenant = req.tenant;
     const [updated] = await meters.update(req.body, {
       where: { id: req.params.id },
       validate: true,
@@ -57,7 +57,7 @@ exports.update = async (req, res) => {
 exports.findAll = async (req, res) => {
   try {
     const allmeter = await meters
-      .scope({ method: ["tenant", req.tenet_id] })
+      .scope({ method: ["tenant", req.tenant] })
       .findAll({
         order: [["createdAt", "ASC"]],
       });

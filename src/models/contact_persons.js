@@ -60,6 +60,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       table_name: DataTypes.STRING,
       table_id: DataTypes.INTEGER,
+      paranoid: true,
     },
     {
       sequelize,

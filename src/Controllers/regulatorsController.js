@@ -36,7 +36,10 @@ exports.create = async (req, res) => {
 
     res.status(201).json(regulator);
   } catch (error) {
-    if (error.name === "SequelizeValidationError") {
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
       const errorMessages = error.errors.map((e) => e.message).join(" | ");
       return res
         .status(400)
@@ -74,12 +77,9 @@ exports.update = async (req, res) => {
       return res.status(404).json({ error: "Regulador não encontrado" });
     }
 
-    // Atualizar o regulador
     await regulator.update(req.body, { transaction });
-
-    // Atualizar ou criar a pessoa de contacto, se necessário
     if (person_name) {
-      const contactPerson = regulator.contact_persons[0]; // Assume que é um só contacto
+      const contactPerson = regulator.contact_persons[0];
 
       if (contactPerson) {
         await contactPerson.update(
@@ -107,7 +107,10 @@ exports.update = async (req, res) => {
     await transaction.commit();
     return res.json(regulator);
   } catch (error) {
-    if (error.name === "SequelizeValidationError") {
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
       const errorMessages = error.errors.map((e) => e.message).join(" | ");
       return res
         .status(400)

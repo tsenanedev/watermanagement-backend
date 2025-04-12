@@ -8,9 +8,9 @@ const authMiddleware = async (req, res, next) => {
       if (err) return res.status(403).json({ message: "Token inválido" });
 
       if (decoded.role) {
-        req.tenet_id = supplierId = decoded.role?.system_suppliers?.id || null;
+        req.tenant_id = supplierId = decoded.role?.system_suppliers?.id || null;
       } else {
-        req.tenet_id = null;
+        req.tenant_id = null;
       }
       req.user = decoded;
       next();

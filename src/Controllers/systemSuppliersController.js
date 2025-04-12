@@ -1,23 +1,42 @@
 const { system_suppliers, contact_persons } = require("../models");
 const { Op } = require("sequelize");
 
+exports.index = async (req, res) => {
+  try {
+    const { page = 1, perPage = 10 } = req.query;
+    const offset = (page - 1) * perPage;
+
+    const { count, rows } = await system_suppliers.findAndCountAll({
+      limit: parseInt(perPage),
+      offset: offset,
+    });
+
+    return res.status(200).json({
+      success: true,
+      total: count,
+      page: parseInt(page),
+      perPage: parseInt(perPage),
+      data: rows,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "erro ao listar todos os sistema de abastecimento" });
+
+    logger.error({
+      message: error.errors?.map((e) => e.message).join(" | ") || error.message,
+      stack: error.stack,
+      sql: error.sql,
+      parameters: error.parameters,
+      timestamp: new Date(),
+    });
+  }
+};
 exports.create = async (req, res) => {
   const transaction = await system_suppliers.sequelize.transaction();
   try {
     const { name, person_name, person_email, person_phone } = req.body;
-    const requiredFields = [
-      "name",
-      "district_id",
-      "system_supplier_id",
-      "account_id",
-    ];
-    for (const field of requiredFields) {
-      if (!req.body[field]) {
-        return res
-          .status(400)
-          .json({ error: `O campo ${field} é obrigatório.` });
-      }
-    }
+
     const system_supplier = await system_suppliers.create(
       req.body,
       {
@@ -49,6 +68,15 @@ exports.create = async (req, res) => {
     await transaction.commit();
     res.status(201).json(system_supplier);
   } catch (error) {
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
+      const errorMessages = error.errors.map((e) => e.message).join(" | ");
+      return res
+        .status(400)
+        .json({ error: `Falha na validação: ${errorMessages}` });
+    }
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
       stack: error.stack,
@@ -83,12 +111,10 @@ exports.update = async (req, res) => {
         .json({ error: "Sistema de Abastecimento não encontrado" });
     }
 
-    // Atualizar o regulador
     await system_supplier.update(req.body, { transaction });
 
-    // Atualizar ou criar a pessoa de contacto, se necessário
     if (person_name) {
-      const contactPerson = system_supplier.contact_persons[0]; // Assume que é um só contacto
+      const contactPerson = system_supplier.contact_persons[0];
 
       if (contactPerson) {
         await contactPerson.update(
@@ -116,41 +142,24 @@ exports.update = async (req, res) => {
     await transaction.commit();
     return res.json(system_supplier);
   } catch (error) {
+    if (error.name === "SequelizeValidationError") {
+      const errorMessages = error.errors.map((e) => e.message).join(" | ");
+      return res
+        .status(400)
+        .json({ error: `Falha na validação: ${errorMessages}` });
+    }
+    logger.error({
+      message: error.errors?.map((e) => e.message).join(" | ") || error.message,
+      stack: error.stack,
+      sql: error.sql,
+      parameters: error.parameters,
+      timestamp: new Date(),
+    });
     res.status(400).json({ error: "Falha ao actualizar" });
-
-    logger.error({
-      message: error.errors?.map((e) => e.message).join(" | ") || error.message,
-      stack: error.stack,
-      sql: error.sql,
-      parameters: error.parameters,
-      timestamp: new Date(),
-    });
   }
 };
 
-// Listar todos os reguladores
-exports.findAll = async (req, res) => {
-  try {
-    const allsystem_suppliers = await system_suppliers.findAll();
-
-    res.json(allsystem_suppliers);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "erro ao listar todos os sistema de abastecimento" });
-
-    logger.error({
-      message: error.errors?.map((e) => e.message).join(" | ") || error.message,
-      stack: error.stack,
-      sql: error.sql,
-      parameters: error.parameters,
-      timestamp: new Date(),
-    });
-  }
-};
-
-// Buscar um regulador por ID
-exports.findOne = async (req, res) => {
+exports.show = async (req, res) => {
   try {
     const system_supplier = await system_suppliers.findByPk(req.params.id);
     if (!system_supplier) {
@@ -167,8 +176,8 @@ exports.findOne = async (req, res) => {
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
       stack: error.stack,
-      sql: error.sql, // Query SQL (se existir)
-      parameters: error.parameters, // Parâmetros (se existirem)
+      sql: error.sql,
+      parameters: error.parameters,
       timestamp: new Date(),
     });
   }

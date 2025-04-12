@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: {
+          args: true,
+          msg: "Já existe um regulador com este nome.",
+        },
         validate: {
           notEmpty: {
             msg: "O nome do regulador é obrigatório",

@@ -11,15 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  // meters.addScope(
-  //   "defaultScope",
-  //   {
-  //     where: {
-  //       tenant_id: tenantNamespace.get("tenantId"),
-  //     },
-  //   },
-  //   { override: true }
-  // );
+
   meters.init(
     {
       tenant_id: DataTypes.INTEGER,
@@ -49,9 +41,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "meters",
-      // defaultScope: {
-      //   where: { tenant_id: 0 }, // Valor inicial (substitua conforme necessário)
-      // },
       scopes: {
         tenant(tenantId) {
           if (tenantId == null) {
