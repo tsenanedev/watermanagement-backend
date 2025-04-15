@@ -1,4 +1,4 @@
-const { districts: districts } = require("../models");
+const { districts } = require("../models");
 
 exports.create = async (req, res) => {
   try {

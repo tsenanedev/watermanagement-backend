@@ -1,4 +1,10 @@
-const { ValidationError, UniqueConstraintError } = require("sequelize");
+const {
+  ValidationError,
+  UniqueConstraintError,
+  ForeignKeyConstraintError,
+  DatabaseError,
+  TimeoutError,
+} = require("sequelize");
 
 class ResponseHandler {
   // Tratamento centralizado de erros
@@ -24,7 +30,72 @@ class ResponseHandler {
         },
       });
     }
+    // Tratamento de erro de chave estrangeira
+    if (error instanceof ForeignKeyConstraintError) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          type: "FOREIGN_KEY_CONSTRAINT",
+          messages: [
+            "Referência inválida: O registro referencia um recurso inexistente.",
+          ],
+        },
+      });
+    }
 
+    // Tratamento de erro de conexão recusada
+    if (error.code === "ECONNREFUSED") {
+      logger.error({
+        message: "Conexão recusada com o banco de dados",
+        stack: error.stack,
+        timestamp: new Date().toISOString(),
+      });
+      return res.status(503).json({
+        success: false,
+        error: {
+          type: "DATABASE_CONNECTION_ERROR",
+          message: "Serviço indisponível. Tente novamente mais tarde.",
+        },
+      });
+    }
+
+    // Tratamento de erro de timeout
+    if (error instanceof TimeoutError) {
+      logger.error({
+        message: "Timeout na operação com o banco de dados",
+        stack: error.stack,
+        timestamp: new Date().toISOString(),
+      });
+      return res.status(504).json({
+        success: false,
+        error: {
+          type: "REQUEST_TIMEOUT",
+          message: "A requisição excedeu o tempo limite.",
+        },
+      });
+    }
+
+    // Tratamento de erro de sintaxe SQL (exemplo para MySQL)
+    if (
+      error instanceof DatabaseError &&
+      error.parent &&
+      error.parent.code === "ER_PARSE_ERROR"
+    ) {
+      logger.error({
+        message: "Erro de sintaxe SQL",
+        sql: error.sql,
+        parameters: error.parameters,
+        stack: error.stack,
+        timestamp: new Date().toISOString(),
+      });
+      return res.status(500).json({
+        success: false,
+        error: {
+          type: "SQL_SYNTAX_ERROR",
+          message: "Erro interno no processamento da requisição.",
+        },
+      });
+    }
     // Log de erros internos
     logger.error({
       message: error.message,
@@ -47,33 +118,11 @@ class ResponseHandler {
   }
 
   // Respostas padronizadas
-  static success(res, data, message = "Operação bem sucedida") {
+  static success(res, data = null, message = "Operação bem sucedida") {
     return res.status(200).json({
       success: true,
       message,
       data,
-    });
-  }
-
-  static created(res, data, message = "Registro criado com sucesso") {
-    return res.status(201).json({
-      success: true,
-      message,
-      data,
-    });
-  }
-
-  static paginated(
-    res,
-    data,
-    pagination,
-    message = "Dados listados com sucesso"
-  ) {
-    return res.status(200).json({
-      success: true,
-      message,
-      data,
-      pagination,
     });
   }
 

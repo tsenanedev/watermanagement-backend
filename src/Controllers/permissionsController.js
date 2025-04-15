@@ -27,12 +27,8 @@ exports.findAll = async (req, res) => {
   }
 };
 const loadControllerMethods = async () => {
-  const ignoredFiles = [
-    "baseController.js",
-    "utils.js",
-    "permissionsController - Copy.js",
-  ];
-  const ignoredControllers = ["auth", "provinces", "districts"];
+  const ignoredFiles = [, "utils.js", "permissionsController - Copy.js"];
+  const ignoredControllers = ["auth", "base", "provinces", "districts"];
   const ignoredMethods = [
     "permissions-bulkImportPermissions",
     "permissions-loadControllerMethods",
@@ -139,15 +135,6 @@ async function bulkImportPermissions() {
       name,
     }));
 
-    // const existingPermissions = await permissions.findAll(
-    //   {
-    //     attributes: ["id", "name"],
-    //     order: [["name", "ASC"]],
-    //     raw: true,
-    //   },
-    //   transaction
-    // );
-
     const existingNames = new Set(existingPermissions.map((p) => p.name));
     const newPermissions = permissionsArray.filter(
       (p) => !existingNames.has(p.name)
@@ -167,7 +154,6 @@ async function bulkImportPermissions() {
     });
 
     return { Permissions: allPermissions };
-    // role.addPermissions(result);
   } catch (error) {
     await transaction.rollback();
     throw error;

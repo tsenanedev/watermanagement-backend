@@ -76,25 +76,25 @@ router.get(
 router.post(
   "/meters",
   authMiddleware,
-  hasPermission("meters-findAll"),
+  hasPermission("meters-create"),
   metersController.create
 );
 router.get(
   "/meters",
   authMiddleware,
-  hasPermission("meters-findAll"),
-  metersController.findAll
+  hasPermission("meters-index"),
+  metersController.index
 );
 router.get(
   "/meters/:id",
   authMiddleware,
-  hasPermission("meters-findAll"),
-  metersController.findOne
+  hasPermission("meters-show"),
+  metersController.show
 );
 router.put(
   "/meters/:id",
   authMiddleware,
-  hasPermission("meters-findAll"),
+  hasPermission("meters-update"),
   metersController.update
 );
 router.delete("/meters/:id", metersController.delete);
@@ -244,6 +244,12 @@ router.post(
   authMiddleware,
   hasPermission("systemSuppliers-create"),
   systemSuppliersController.create
+);
+router.post(
+  "/system_suppliers/bulkCreate",
+  authMiddleware,
+  hasPermission("systemSuppliers-bulkCreate"),
+  systemSuppliersController.bulkCreate
 );
 router.get(
   "/system_suppliers",

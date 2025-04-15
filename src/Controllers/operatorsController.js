@@ -130,7 +130,7 @@ exports.findAll = async (req, res) => {
     const alloperator = await operators.findAll({
       include: [
         {
-          association: "system_suppliers", // Associação definida em operators.js
+          association: "system_suppliers", 
           include: [
             {
               association: "districts", // Associação definida em system_suppliers.js

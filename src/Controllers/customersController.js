@@ -22,7 +22,7 @@ class CustomerController {
         data: rows,
       });
     } catch (error) {
-      ResponseHandler.handleError(error);
+      return ResponseHandler.handleError(error, res);
     }
   }
 
@@ -36,12 +36,16 @@ class CustomerController {
         });
 
       if (!customer) {
-        return res.status(404).json({ error: "Cliente não encontrado" });
+        return ResponseHandler.notFound(res, "Cliente");
       }
 
       return res.status(200).json(customer);
     } catch (error) {
-      ResponseHandler.handleError(error, "erro ao buscardados do cliente");
+      return ResponseHandler.handleError(
+        error,
+        res,
+        "erro ao buscar dados do cliente"
+      );
     }
   }
 
@@ -66,7 +70,11 @@ class CustomerController {
 
       return res.status(201).json(newCustomer);
     } catch (error) {
-      ResponseHandler.handleError(error, "Erro ao criar cliente");
+      return ResponseHandler.handleError(
+        error,
+        res,
+        "Erro ao cadastrar cliente"
+      );
     }
   }
 
@@ -77,7 +85,7 @@ class CustomerController {
         .scope({ method: ["tenant", req.tenant_id] })
         .findByPk(req.params.id);
       if (!customer) {
-        return res.status(404).json({ error: "Cliente não encontrado" });
+        return ResponseHandler.notFound(res, "Cliente");
       }
 
       const allowedFields = {
@@ -95,9 +103,13 @@ class CustomerController {
       };
 
       await customer.update(allowedFields);
-      return res.status(200).json(await customers.findByPk(req.params.id));
+      ResponseHandler.success(res, await customers.findByPk(req.params.id));
     } catch (error) {
-      ResponseHandler.handleError(error, "Erro ao actualizar cliente");
+      return ResponseHandler.handleError(
+        error,
+        res,
+        "Erro ao actualizar cliente"
+      );
     }
   }
 
@@ -108,13 +120,17 @@ class CustomerController {
         .scope({ method: ["tenant", req.tenant_id] })
         .findByPk(req.params.id);
       if (!customer) {
-        return res.status(404).json({ error: "Cliente não encontrado" });
+        return ResponseHandler.notFound(res, "Cliente");
       }
 
       await customer.destroy();
       return res.status(200).json({ message: `Cliente deletado com sucesso` });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return ResponseHandler.handleError(
+        error,
+        res,
+        "Erro ao eliminar cliente"
+      );
     }
   }
 }

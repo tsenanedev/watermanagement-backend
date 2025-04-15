@@ -47,6 +47,9 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: {
             msg: "O nome do sistema de abastecimento é obrigatório",
           },
+          notNull: {
+            msg: "O nome do sistema de abastecimento é obrigatório",
+          },
           len: {
             args: [3, 100],
             msg: "O nome deve ter entre 3 e 100 caracteres",
@@ -58,6 +61,9 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notEmpty: {
+            msg: "O campo operador é obrigatório.",
+          },
+          notNull: {
             msg: "O campo operador é obrigatório.",
           },
         },
