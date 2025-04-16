@@ -184,12 +184,12 @@ async function checkToken(req, res) {
     decoded;
 
   try {
-    decoded = jwt.verify(authorization.split(" ")[1], SECRET_KEY);
+    decoded = jwt.verify(authorization.split(" ")[1], process.env.JWT_SECRET);
   } catch (e) {
     return res.status(401).send({ success: false, message: e });
   }
   const uid = decoded.uid;
-  let token = jwt.sign({ uid }, SECRET_KEY, {
+  let token = jwt.sign({ uid }, process.env.JWT_SECRET, {
     expiresIn: "1h",
   });
 

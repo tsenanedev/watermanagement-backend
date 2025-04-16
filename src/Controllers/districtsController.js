@@ -43,8 +43,9 @@ exports.update = async (req, res) => {
 // Listar todos os districtes
 exports.findAll = async (req, res) => {
   try {
-    const alldistrict = await district.findAll({
-      where: { id: req.params.province_id },
+    const alldistrict = await districts.findAll({
+      // where: { id: req.params.province_id },
+      // where: { province_id: req.params.province_id },
     });
 
     res.json(alldistrict);

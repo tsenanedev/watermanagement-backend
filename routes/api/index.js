@@ -132,26 +132,31 @@ router.delete(
 // CRUD regulators
 router.post(
   "/regulators",
+  authMiddleware,
   hasPermission("regulators-create"),
   regulatorsController.create
 );
 router.get(
   "/regulators",
+  authMiddleware,
   hasPermission("regulators-findAll"),
   regulatorsController.findAll
 );
 router.get(
   "/regulators/:id",
+  authMiddleware,
   hasPermission("regulators-findOne"),
   regulatorsController.findOne
 );
 router.put(
   "/regulators/:id",
+  authMiddleware,
   hasPermission("regulators-update"),
   regulatorsController.update
 );
 router.delete(
   "/regulators/:id",
+  authMiddleware,
   hasPermission("regulators-delete"),
   regulatorsController.delete
 );
