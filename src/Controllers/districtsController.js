@@ -1,4 +1,4 @@
-const { districts: districts } = require("../models");
+const { districts } = require("../models");
 
 exports.create = async (req, res) => {
   try {
@@ -43,9 +43,14 @@ exports.update = async (req, res) => {
 // Listar todos os districtes
 exports.findAll = async (req, res) => {
   try {
+<<<<<<< HEAD
     const alldistrict = await districts.findAll({
       // where: { id: req.params.province_id },
       // where: { province_id: req.params.province_id },
+=======
+    const alldistrict = await district.findAll({
+      where: { province_id: req.params.province_id },
+>>>>>>> 2f3fbaa511acfc08b1ba120f3e526aae0ac3f72a
     });
 
     res.json(alldistrict);

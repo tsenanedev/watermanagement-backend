@@ -72,3 +72,30 @@ GET /regulators/1 → Buscar por ID
 PUT /regulators/1 → Atualizar
 
 DELETE /regulators/1 → Deletar
+
+## Endpoints: system_suppliers
+
+system_suppliers/bulkCreate
+
+```sh
+[
+  {
+    "name": "Sistema de Água A",
+    "operator": "WALI",
+    "district": "Mecúfe",
+    "nuit": "123456789",
+     "address": "Av. Central, 456",// Opcional
+    "person_name": "João Silva",     // Opcional
+    "person_email": "joao@empresa.com", // Opcional
+    "person_phone": "+258 84 123 4567"  // Opcional
+  },
+  {
+    "name": "Sistema de Água B",
+    "operator": "WALI",
+    "district":"Balama",
+    "address": "Av. Central, 456",// Opcional
+    "person_name": "Maria Santos",   // Opcional
+    "person_email": "maria@empresa.com"// Opcional
+  }
+]
+```

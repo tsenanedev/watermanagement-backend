@@ -1,8 +1,57 @@
 const {
-  roles: roles,
+  roles,
   system_suppliers: system_suppliers,
   regulators: regulators,
 } = require("../models");
+// Listar todos os rolees
+exports.index = async (req, res) => {
+  try {
+    const { page = 1, perPage = 10 } = req.query;
+    const offset = (page - 1) * perPage;
+
+    const { count, rows } = await roles
+      .scope({ method: ["tenant", req.tenant] })
+      .findAndCountAll({
+        limit: parseInt(perPage),
+        offset: offset,
+        include: [
+          {
+            association: "regulators",
+            required: false, // Não é obrigatório ter um regulador
+            where: { "$roles.table_name$": "regulators" }, // Filtro para reguladores
+          },
+          {
+            association: "system_suppliers",
+            required: false, // Não é obrigatório ter um operador
+            where: { "$roles.table_name$": "system_suppliers" }, // Filtro para operadores
+            include: [
+              {
+                association: "operators", // Alias definido na associação
+                attributes: ["id", "name"], // Campos específicos do operador (opcional)
+              },
+            ],
+          },
+        ],
+      });
+
+    return res.status(200).json({
+      //   success: true,
+      total: count,
+      page: parseInt(page),
+      perPage: parseInt(perPage),
+      data: rows,
+    });
+  } catch (error) {
+    logger.error({
+      message: error.errors?.map((e) => e.message).join(" | ") || error.message,
+      stack: error.stack,
+      sql: error.sql,
+      parameters: error.parameters,
+      timestamp: new Date(),
+    });
+    res.status(500).json({ error: "Erro ao listar todos os perfis de acesso" });
+  }
+};
 
 exports.create = async (req, res) => {
   const {
@@ -149,51 +198,8 @@ exports.update = async (req, res) => {
   }
 };
 
-// Listar todos os rolees
-exports.findAll = async (req, res) => {
-  try {
-    const allrole = await roles
-      .scope({ method: ["tenant", req.tenet_id] })
-      .findAll({
-        include: [
-          {
-            association: "regulators",
-            required: false, // Não é obrigatório ter um regulador
-            where: { "$roles.table_name$": "regulators" }, // Filtro para reguladores
-          },
-          {
-            association: "system_suppliers",
-            required: false, // Não é obrigatório ter um operador
-            where: { "$roles.table_name$": "system_suppliers" }, // Filtro para operadores
-            include: [
-              {
-                association: "operators", // Alias definido na associação
-                attributes: ["id", "name"], // Campos específicos do operador (opcional)
-              },
-            ],
-          },
-        ],
-      });
-
-    res.status(200).json({
-      success: true,
-      message: "Perfil de acesso processados com sucesso",
-      data: allrole,
-    });
-  } catch (error) {
-    logger.error({
-      message: error.errors?.map((e) => e.message).join(" | ") || error.message,
-      stack: error.stack,
-      sql: error.sql,
-      parameters: error.parameters,
-      timestamp: new Date(),
-    });
-    res.status(500).json({ error: "Erro ao listar todos os perfis de acesso" });
-  }
-};
-
 // Buscar um role por ID
-exports.findOne = async (req, res) => {
+exports.show = async (req, res) => {
   try {
     const role = await roles.findByPk(req.params.id);
     if (!role) {

@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      tenet_id: {
+      tenant_id: {
         type: Sequelize.INTEGER,
       },
       number: {
@@ -32,6 +32,10 @@ module.exports = {
         type: Sequelize.DATE,
       },
       updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      deletedAt: {
         allowNull: false,
         type: Sequelize.DATE,
       },

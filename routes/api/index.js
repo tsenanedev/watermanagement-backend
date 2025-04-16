@@ -16,7 +16,7 @@ const rolesController = require("../../src/Controllers/rolesController");
 const authMiddleware = require("../../src/middlewares/authMiddleware");
 const metersController = require("../../src/Controllers/metersController");
 const districtsController = require("../../src/Controllers/districtsController");
-
+const customersController = require("../../src/Controllers/customersController");
 const jwtToken = require("./jwtController");
 
 const users = require("./users");
@@ -76,25 +76,25 @@ router.get(
 router.post(
   "/meters",
   authMiddleware,
-  hasPermission("meters-findAll"),
+  hasPermission("meters-create"),
   metersController.create
 );
 router.get(
   "/meters",
   authMiddleware,
-  hasPermission("meters-findAll"),
-  metersController.findAll
+  hasPermission("meters-index"),
+  metersController.index
 );
 router.get(
   "/meters/:id",
   authMiddleware,
-  hasPermission("meters-findAll"),
-  metersController.findOne
+  hasPermission("meters-show"),
+  metersController.show
 );
 router.put(
   "/meters/:id",
   authMiddleware,
-  hasPermission("meters-findAll"),
+  hasPermission("meters-update"),
   metersController.update
 );
 router.delete("/meters/:id", metersController.delete);
@@ -108,14 +108,14 @@ router.post(
 router.get(
   "/roles",
   authMiddleware,
-  hasPermission("roles-findAll"),
-  rolesController.findAll
+  hasPermission("roles-index"),
+  rolesController.index
 );
 router.get(
   "/roles/:id",
   authMiddleware,
-  hasPermission("roles-findOne"),
-  rolesController.findOne
+  hasPermission("roles-show"),
+  rolesController.show
 );
 router.put(
   "/roles/:id",
@@ -128,6 +128,38 @@ router.delete(
   authMiddleware,
   hasPermission("roles-delete"),
   rolesController.delete
+);
+
+// CRUD Customer
+router.post(
+  "/customers",
+  authMiddleware,
+  hasPermission("customers-create"),
+  customersController.create
+);
+router.get(
+  "/customers",
+  authMiddleware,
+  hasPermission("customers-index"),
+  customersController.index
+);
+router.get(
+  "/customers/:id",
+  authMiddleware,
+  hasPermission("customers-show"),
+  customersController.show
+);
+router.put(
+  "/customers/:id",
+  authMiddleware,
+  hasPermission("customers-update"),
+  customersController.update
+);
+router.delete(
+  "/customers/:id",
+  authMiddleware,
+  hasPermission("customers-delete"),
+  customersController.delete
 );
 // CRUD regulators
 router.post(
@@ -160,7 +192,7 @@ router.delete(
   hasPermission("regulators-delete"),
   regulatorsController.delete
 );
-// CRUD regulators
+// CRUD operadores
 router.post(
   "/operators",
   authMiddleware,
@@ -213,22 +245,28 @@ router.post(
   hasPermission("systemSuppliers-create"),
   systemSuppliersController.create
 );
+router.post(
+  "/system_suppliers/bulkCreate",
+  authMiddleware,
+  hasPermission("systemSuppliers-bulkCreate"),
+  systemSuppliersController.bulkCreate
+);
 router.get(
   "/system_suppliers",
   authMiddleware,
-  hasPermission("systemSuppliers-findAll"),
-  systemSuppliersController.findAll
+  hasPermission("systemSuppliers-index"),
+  systemSuppliersController.index
 );
 router.get(
   "/system_suppliers/:id",
   authMiddleware,
-  hasPermission("systemSuppliers-findOne"),
-  systemSuppliersController.findOne
+  hasPermission("systemSuppliers-show"),
+  systemSuppliersController.show
 );
 router.put(
   "/system_suppliers/:id",
   authMiddleware,
-  hasPermission("systemSuppliers-delete"),
+  hasPermission("systemSuppliers-update"),
   systemSuppliersController.update
 );
 router.delete(

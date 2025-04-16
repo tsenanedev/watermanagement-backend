@@ -1,11 +1,50 @@
-const { regulators: regulators } = require("../models");
-const { Op } = require("sequelize");
+const { regulators, contact_persons } = require("../models");
 
 exports.create = async (req, res) => {
+  const transaction = await regulators.sequelize.transaction();
+  const { name, person_name, person_email, person_phone } = req.body;
   try {
-    const regulator = await regulators.create(req.body);
+    const regulator = await regulators.create(
+      req.body,
+      {
+        include: [
+          {
+            association: "contact_persons",
+            required: false,
+            attributes: ["id", "name", "phone_number", "email"],
+          },
+        ],
+      },
+      { transaction }
+    );
+    if (regulator) {
+      if (person_name) {
+        await contact_persons.create(
+          {
+            name: person_name,
+            email: person_email,
+            phone_number: person_phone,
+            table_name: "regulators",
+            table_id: regulator.id,
+          },
+          { transaction }
+        );
+      }
+    }
+    await regulator.reload({ transaction });
+    await transaction.commit();
+
     res.status(201).json(regulator);
   } catch (error) {
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
+      const errorMessages = error.errors.map((e) => e.message).join(" | ");
+      return res
+        .status(400)
+        .json({ error: `Falha na validação: ${errorMessages}` });
+    }
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
       stack: error.stack,
@@ -19,19 +58,64 @@ exports.create = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+  const { person_name, person_email, person_phone } = req.body;
+  const transaction = await regulators.sequelize.transaction();
   try {
-    const [updated] = await regulators.update(req.body, {
+    const regulator = await regulators.findOne({
       where: { id: req.params.id },
-      validate: true, // Validações do modelo
+      include: [
+        {
+          association: "contact_persons",
+          required: false,
+          attributes: ["id", "name", "phone_number", "email"],
+        },
+      ],
+      transaction,
     });
-    if (updated === 0) {
+
+    if (!regulator) {
       return res.status(404).json({ error: "Regulador não encontrado" });
     }
-    const updatedRegulator = await regulators.findByPk(req.params.id);
-    res.json(updatedRegulator);
-  } catch (error) {
-    res.status(400).json({ error: "Falha ao actualizar" });
 
+    await regulator.update(req.body, { transaction });
+    if (person_name) {
+      const contactPerson = regulator.contact_persons[0];
+
+      if (contactPerson) {
+        await contactPerson.update(
+          {
+            name: person_name,
+            email: person_email,
+            phone_number: person_phone,
+          },
+          { transaction }
+        );
+      } else {
+        await contact_persons.create(
+          {
+            name: person_name,
+            email: person_email,
+            phone_number: person_phone,
+            table_name: "regulators",
+            table_id: regulator.id,
+          },
+          { transaction }
+        );
+      }
+    }
+    await regulator.reload({ transaction });
+    await transaction.commit();
+    return res.json(regulator);
+  } catch (error) {
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
+      const errorMessages = error.errors.map((e) => e.message).join(" | ");
+      return res
+        .status(400)
+        .json({ error: `Falha na validação: ${errorMessages}` });
+    }
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
       stack: error.stack,
@@ -39,6 +123,7 @@ exports.update = async (req, res) => {
       parameters: error.parameters,
       timestamp: new Date(),
     });
+    res.status(400).json({ error: "Falha ao actualizar" });
   }
 };
 

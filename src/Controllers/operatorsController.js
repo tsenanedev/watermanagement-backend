@@ -1,10 +1,46 @@
-const { operators: operators } = require("../models");
+const { operators, contact_persons } = require("../models");
 
 exports.create = async (req, res) => {
+  const transaction = await operators.sequelize.transaction();
   try {
-    const operator = await operators.create(req.body);
+    const { name, person_name, person_email, person_phone } = req.body;
+    const operator = await operators.create(
+      req.body,
+      {
+        include: [
+          {
+            association: "contact_persons",
+            required: false,
+            attributes: ["id", "name", "phone_number", "email"],
+          },
+        ],
+      },
+      { transaction }
+    );
+    if (operator) {
+      if (person_name) {
+        await contact_persons.create({
+          name: person_name,
+          email: person_email,
+          phone_number: person_phone,
+          table_name: "operators",
+          table_id: operator.id,
+        });
+      }
+    }
+    await operator.reload({ transaction });
+    await transaction.commit();
     res.status(201).json(operator);
   } catch (error) {
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
+      const errorMessages = error.errors.map((e) => e.message).join(" | ");
+      return res
+        .status(400)
+        .json({ error: `Falha na validação: ${errorMessages}` });
+    }
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
       stack: error.stack,
@@ -12,25 +48,71 @@ exports.create = async (req, res) => {
       parameters: error.parameters,
       timestamp: new Date(),
     });
-
-    res.status(400).json({ error: "Falha ao criar Operator" });
+    await transaction.rollback();
+    res.status(400).json({ error: "Falha ao criar operador" });
   }
 };
 
 exports.update = async (req, res) => {
+  const { person_name, person_email, person_phone } = req.body;
+  const transaction = await operators.sequelize.transaction();
   try {
-    const [updated] = await operators.update(req.body, {
+    const operator = await operators.findOne({
       where: { id: req.params.id },
-      validate: true, // Validações do modelo
+      include: [
+        {
+          association: "contact_persons",
+          required: false,
+          attributes: ["id", "name", "phone_number", "email"],
+        },
+      ],
+      transaction,
     });
-    if (updated === 0) {
-      return res.status(404).json({ error: "Operator não encontrado" });
-    }
-    const updatedOperator = await operators.findByPk(req.params.id);
-    res.json(updatedOperator);
-  } catch (error) {
-    res.status(400).json({ error: "Falha ao actualizar" });
 
+    if (!operator) {
+      return res.status(404).json({ error: "Regulador não encontrado" });
+    }
+
+    await operator.update(req.body, { transaction });
+
+    if (person_name) {
+      const contactPerson = operator.contact_persons[0];
+
+      if (contactPerson) {
+        await contactPerson.update(
+          {
+            name: person_name,
+            email: person_email,
+            phone_number: person_phone,
+          },
+          { transaction }
+        );
+      } else {
+        await contact_persons.create(
+          {
+            name: person_name,
+            email: person_email,
+            phone_number: person_phone,
+            table_name: "operators",
+            table_id: operator.id,
+          },
+          { transaction }
+        );
+      }
+    }
+    await operator.reload({ transaction });
+    await transaction.commit();
+    return res.json(operator);
+  } catch (error) {
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
+      const errorMessages = error.errors.map((e) => e.message).join(" | ");
+      return res
+        .status(400)
+        .json({ error: `Falha na validação: ${errorMessages}` });
+    }
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
       stack: error.stack,
@@ -38,6 +120,7 @@ exports.update = async (req, res) => {
       parameters: error.parameters,
       timestamp: new Date(),
     });
+    res.status(400).json({ error: "Falha ao actualizar" });
   }
 };
 
@@ -47,7 +130,7 @@ exports.findAll = async (req, res) => {
     const alloperator = await operators.findAll({
       include: [
         {
-          association: "system_suppliers", // Associação definida em operators.js
+          association: "system_suppliers", 
           include: [
             {
               association: "districts", // Associação definida em system_suppliers.js
@@ -61,8 +144,6 @@ exports.findAll = async (req, res) => {
 
     res.json(alloperator);
   } catch (error) {
-    res.status(500).json({ error: "erro ao listar todos os Operatores" });
-
     logger.error({
       message: error.errors?.map((e) => e.message).join(" | ") || error.message,
       stack: error.stack,
@@ -70,6 +151,7 @@ exports.findAll = async (req, res) => {
       parameters: error.parameters,
       timestamp: new Date(),
     });
+    res.status(500).json({ error: "erro ao listar todos os Operatores" });
   }
 };
 

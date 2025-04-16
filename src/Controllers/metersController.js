@@ -1,8 +1,36 @@
-const { meters: meters } = require("../models");
+const { meters } = require("../models");
+const ResponseHandler = require("./baseController");
 
+// Listar todos os meteres
+exports.index = async (req, res) => {
+  try {
+    const { page = 1, perPage = 10 } = req.query;
+    const offset = (page - 1) * perPage;
+
+    const { count, rows } = await meters
+      .scope({ method: ["tenant", req.tenant] })
+      .findAndCountAll({
+        order: [["createdAt", "ASC"]],
+        limit: parseInt(perPage),
+        offset: offset,
+      });
+
+    return res.status(200).json({
+      success: true,
+      total: count,
+      page: parseInt(page),
+      perPage: parseInt(perPage),
+      data: rows,
+    });
+  } catch (error) {
+    console.log(process.env.DB_DIALECT);
+
+    ResponseHandler.handleError(error, res, "Erro ao listar todos os Contador");
+  }
+};
 exports.create = async (req, res) => {
   try {
-    req.body.tenant = req.tenet_id;
+    req.body.tenant = req.tenant;
     const meter = await meters.create(req.body);
 
     res.status(200).json({
@@ -11,21 +39,13 @@ exports.create = async (req, res) => {
       data: meter,
     });
   } catch (error) {
-    logger.error({
-      message: error.errors?.map((e) => e.message).join(" | ") || error.message,
-      stack: error.stack,
-      sql: error.sql,
-      parameters: error.parameters,
-      timestamp: new Date(),
-    });
-
-    res.status(400).json({ error: "Falha ao criar Contador" });
+    ResponseHandler.handleError(error, res, "Falha ao criar Contador");
   }
 };
 
 exports.update = async (req, res) => {
   try {
-    req.body.tenant = req.tenet_id;
+    req.body.tenant = req.tenant;
     const [updated] = await meters.update(req.body, {
       where: { id: req.params.id },
       validate: true,
@@ -41,44 +61,12 @@ exports.update = async (req, res) => {
       data: updatedmeter,
     });
   } catch (error) {
-    res.status(400).json({ error: "Falha ao actualizar" });
-
-    logger.error({
-      message: error.errors?.map((e) => e.message).join(" | ") || error.message,
-      stack: error.stack,
-      sql: error.sql,
-      parameters: error.parameters,
-      timestamp: new Date(),
-    });
-  }
-};
-
-// Listar todos os meteres
-exports.findAll = async (req, res) => {
-  try {
-    const allmeter = await meters
-      .scope({ method: ["tenant", req.tenet_id] })
-      .findAll({
-        order: [["createdAt", "ASC"]],
-      });
-
-    res.json(allmeter);
-  } catch (error) {
-    console.log(process.env.DB_DIALECT);
-    res.status(500).json({ error: "Erro ao listar todos os Contador" });
-
-    logger.error({
-      message: error.errors?.map((e) => e.message).join(" | ") || error.message,
-      stack: error.stack,
-      sql: error.sql,
-      parameters: error.parameters,
-      timestamp: new Date(),
-    });
+    ResponseHandler.handleError(error, res, "Falha ao actualizar Contador");
   }
 };
 
 // Buscar um meter por ID
-exports.findOne = async (req, res) => {
+exports.show = async (req, res) => {
   try {
     const meter = await meters.findByPk(req.params.id);
     if (!meter) {
