@@ -67,15 +67,23 @@ npx sequelize-cli db:seed:undo:all
 
 GET /regulators → Listar todos
 
-GET /regulators/1 → Buscar por ID
+GET /regulators/id → Buscar por ID
 
-PUT /regulators/1 → Atualizar
+PUT /regulators/id → Atualizar
 
-DELETE /regulators/1 → Deletar
+DELETE /regulators/id → Deletar
 
 ## Endpoints: system_suppliers
 
-system_suppliers/bulkCreate
+GET /system_suppliers → Listar todos
+
+GET /system_suppliers/id → Buscar por ID
+
+PUT /system_suppliers/id → Atualizar
+
+DELETE /system_suppliers/id → Deletar
+
+### POST /bulkCreatesystem_suppliers/bulkCreate
 
 ```sh
 [

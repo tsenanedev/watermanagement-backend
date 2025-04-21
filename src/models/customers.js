@@ -77,6 +77,10 @@ module.exports = (sequelize, DataTypes) => {
           }
         },
       },
+      gender: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       tenant_id: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -108,6 +112,10 @@ module.exports = (sequelize, DataTypes) => {
       whatsapp: {
         type: DataTypes.STRING,
         allowNull: true,
+      },
+      neighbourhoods: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
     },
     {
