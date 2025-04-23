@@ -7,7 +7,7 @@ class CustomerController {
       const offset = (page - 1) * perPage;
 
       const { count, rows } = await customers
-        .scope({ method: ["tenant", req.tenant_id] })
+        .scope({ method: ["system_supplier", req.tenant_id] })
         .findAndCountAll({
           include: [{ association: "meters" }],
           limit: parseInt(perPage),
@@ -30,7 +30,7 @@ class CustomerController {
   static async show(req, res) {
     try {
       const customer = await customers
-        .scope({ method: ["tenant", req.tenant_id] })
+        .scope({ method: ["system_supplier", req.tenant_id] })
         .findByPk(req.params.id, {
           include: [{ model: meters, as: "meters" }],
         });
@@ -63,7 +63,8 @@ class CustomerController {
         lng: req.body.lng,
         status: req.body.status,
         whatsap: req.body.whatsap,
-        tenant_id: req.tenant_id,
+        system_supplier_id: req.body.system_supplier_id,
+        tariff_type_id: req.tariff_type_id,
       };
 
       const newCustomer = await customers.create(allowedFields);
@@ -82,7 +83,7 @@ class CustomerController {
   static async update(req, res) {
     try {
       const customer = await customers
-        .scope({ method: ["tenant", req.tenant_id] })
+        .scope({ method: ["system_supplier", req.tenant_id] })
         .findByPk(req.params.id);
       if (!customer) {
         return ResponseHandler.notFound(res, "Cliente");
@@ -99,7 +100,8 @@ class CustomerController {
         lng: req.body.lng,
         status: req.body.status,
         whatsap: req.body.whatsap,
-        tenant_id: req.tenant_id,
+        system_supplier_id: req.body.system_supplier_id,
+        tariff_type_id: req.tariff_type_id,
       };
 
       await customer.update(allowedFields);
@@ -117,7 +119,7 @@ class CustomerController {
   static async delete(req, res) {
     try {
       const customer = await customers
-        .scope({ method: ["tenant", req.tenant_id] })
+        .scope({ method: ["system_supplier", req.tenant_id] })
         .findByPk(req.params.id);
       if (!customer) {
         return ResponseHandler.notFound(res, "Cliente");

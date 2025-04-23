@@ -9,20 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      system_supplier_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: { model: "system_suppliers", key: "id" },
-        onUpdate: "CASCADE",
-        onDelete: "RESTRICT",
-      },
-      tariff_type_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: { model: "tariff_types", key: "id" },
-        onUpdate: "CASCADE",
-        onDelete: "RESTRICT",
-      },
+
       level_name: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -40,7 +27,7 @@ module.exports = {
         allowNull: true,
       },
       unit_type: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.STRING,
         allowNull: true,
       },
       availability_fee: {
@@ -53,6 +40,20 @@ module.exports = {
       },
       valid_to: {
         type: Sequelize.DATEONLY,
+      },
+      system_supplier_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: "system_suppliers", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      tariff_type_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: "tarrif_types", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,

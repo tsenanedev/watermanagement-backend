@@ -14,16 +14,18 @@ module.exports = (sequelize, DataTypes) => {
 
   meters.init(
     {
-      tenant_id: DataTypes.INTEGER,
       number: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
       },
+      diameter: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       type: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
       },
       status: {
         type: DataTypes.STRING,
@@ -37,6 +39,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      tenant_id: DataTypes.INTEGER,
     },
     {
       sequelize,

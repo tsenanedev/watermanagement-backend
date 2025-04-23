@@ -9,13 +9,17 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      tenant_id: {
-        type: Sequelize.INTEGER,
-      },
+
       number: {
         type: Sequelize.STRING,
       },
       type: {
+        type: Sequelize.STRING,
+      },
+      diameter: {
+        type: Sequelize.STRING,
+      },
+      description: {
         type: Sequelize.STRING,
       },
       status: {
@@ -24,8 +28,9 @@ module.exports = {
       local_instalacao: {
         type: Sequelize.STRING,
       },
-      description: {
-        type: Sequelize.STRING,
+
+      tenant_id: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,

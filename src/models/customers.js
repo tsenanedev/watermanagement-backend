@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   customers.init(
     {
+      barcode: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -61,6 +65,28 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
+      tariff_type_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: "O campo tarifa é obrigatório.",
+          },
+          notNull: {
+            msg: "O campo tarifa é obrigatório.",
+          },
+        },
+      },
+      system_supplier_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        notEmpty: {
+          msg: "Informe o Sistema de Abastecimento .",
+        },
+        notNull: {
+          msg: "Informe o Sistema de Abastecimento.",
+        },
+      },
       meter_id: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -81,10 +107,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      tenant_id: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
+
       nuit: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -113,8 +136,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      neighbourhoods: {
-        type: DataTypes.STRING,
+      neighbourhood_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },
@@ -122,12 +145,12 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "customers",
       scopes: {
-        tenant(tenantId) {
+        system_supplier(tenantId) {
           if (tenantId == null) {
             return {};
           }
           return {
-            where: { tenant_id: tenantId },
+            where: { system_supplier_id: tenantId },
           };
         },
       },

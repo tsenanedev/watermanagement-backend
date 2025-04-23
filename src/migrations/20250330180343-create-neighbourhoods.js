@@ -12,8 +12,14 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
-      districts_id: {
+      district_id: {
         type: Sequelize.INTEGER,
+        references: {
+          model: "districts",
+          key: "id",
+        },
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
