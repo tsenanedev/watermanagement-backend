@@ -25,7 +25,103 @@ class CustomerController {
       return ResponseHandler.handleError(error, res);
     }
   }
+  static async bindMeter(req, res) {
+    const { meter: meterNumber, id: customer_id } = req.params;
+    const transaction = await customers.sequelize.transaction();
+    try {
+      const customer = await customers
+        .scope({ method: ["system_supplier", req.tenant_id] })
+        .findByPk(customer_id, {
+          include: [{ model: meters, as: "meters" }],
+        });
 
+      if (!customer) {
+        return ResponseHandler.notFound(res, "cliente");
+      }
+
+      if (customer.meter_id !== null) {
+        return res.status(400).json({
+          error: `O cliente ${customer.name} já possui um contador associado.`,
+        });
+      }
+
+      const meter = await meters.findOne({
+        where: { number: meterNumber },
+      });
+
+      if (!meter) {
+        return ResponseHandler.notFound(res, "Contador");
+      }
+
+      const existingCustomerWithMeter = await customers.findOne({
+        where: { meter_id: meter.id },
+      });
+
+      if (existingCustomerWithMeter) {
+        return res
+          .status(400)
+          .json({ error: "O contador já está associado a outro cliente." });
+      }
+      await Promise.all([
+        customer.update({ meter_id: meter.id }, { transaction }),
+        meter.update({ is_assigned: true }, { transaction }),
+      ]);
+
+      await customer.reload({ transaction });
+
+      await transaction.commit();
+
+      return ResponseHandler.success(res, customer);
+    } catch (error) {
+      await transaction.rollback();
+      return ResponseHandler.handleError(
+        error,
+        res,
+        "Erro ao associar o contador"
+      );
+    }
+  }
+
+  static async unbindMeter(req, res) {
+    const transaction = await customers.sequelize.transaction();
+    try {
+      const customer = await customers
+        .scope({ method: ["system_supplier", req.tenant_id] })
+        .findByPk(req.params.id);
+
+      if (!customer) {
+        return ResponseHandler.notFound(res, "Cliente");
+      }
+      if (!customer.meter_id) {
+        return ResponseHandler.badRequest(
+          res,
+          "Cliente não possui contador associado"
+        );
+      }
+      const meter = await meters.findByPk(customer.meter_id, { transaction });
+      if (!meter) {
+        return ResponseHandler.notFound(res, "Contador");
+      }
+      await Promise.all([
+        customer.update({ meter_id: null }, { transaction }),
+        meter.update({ is_assigned: false }, { transaction }),
+      ]);
+      await customer.reload({ transaction });
+      await transaction.commit();
+      return ResponseHandler.success(
+        res,
+        customer,
+        "Desassociação realizada com sucesso"
+      );
+    } catch (error) {
+      await transaction.rollback();
+      return ResponseHandler.handleError(
+        error,
+        res,
+        "Falha na desassociação do contador"
+      );
+    }
+  }
   // Obter um cliente por ID
   static async show(req, res) {
     try {
@@ -56,7 +152,6 @@ class CustomerController {
         name: req.body.name,
         telephone: req.body.telephone,
         email: req.body.email,
-        meter_id: req.body.meter_id,
         nuit: req.body.nuit,
         address: req.body.address,
         lat: req.body.lat,
@@ -68,7 +163,19 @@ class CustomerController {
       };
 
       const newCustomer = await customers.create(allowedFields);
+      if (req.body.meter) {
+        const fakeReq = {
+          ...req,
+          params: {
+            id: newCustomer.id,
+            meter: req.body.meter,
+          },
+        };
 
+        await this.bindMeter(fakeReq, res);
+
+        if (res.headersSent) return;
+      }
       return res.status(201).json(newCustomer);
     } catch (error) {
       return ResponseHandler.handleError(

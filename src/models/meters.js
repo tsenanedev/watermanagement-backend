@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      is_assigned: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
       type: {
         type: DataTypes.STRING,
         allowNull: false,

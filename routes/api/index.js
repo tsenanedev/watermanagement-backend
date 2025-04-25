@@ -138,6 +138,18 @@ router.post(
   customersController.create
 );
 router.get(
+  "/customers/bind_meter/:id/:meter",
+  authMiddleware,
+  hasPermission("customers-bindMeter"),
+  customersController.bindMeter
+);
+router.get(
+  "/customers/unbind_meter/:id/",
+  authMiddleware,
+  hasPermission("customers-unbindMeter"),
+  customersController.unbindMeter
+);
+router.get(
   "/customers",
   authMiddleware,
   hasPermission("customers-index"),

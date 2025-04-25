@@ -20,14 +20,12 @@ module.exports = {
       },
       telephone: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       email: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
-      tenant_id: {
-        type: Sequelize.INTEGER,
-      },
-
       nuit: {
         type: Sequelize.STRING,
         unique: true,
@@ -41,24 +39,20 @@ module.exports = {
       },
       lat: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       lng: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       status: {
         type: Sequelize.STRING,
       },
       whatsapp: {
         type: Sequelize.STRING,
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
-      updatedAt: {
         allowNull: true,
-        type: Sequelize.DATE,
       },
+
       meter_id: {
         type: Sequelize.INTEGER,
         unique: true,
@@ -90,6 +84,14 @@ module.exports = {
         references: { model: "neighbourhoods", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: true,
+        type: Sequelize.DATE,
       },
     });
   },

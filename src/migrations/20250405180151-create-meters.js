@@ -28,7 +28,9 @@ module.exports = {
       local_instalacao: {
         type: Sequelize.STRING,
       },
-
+      is_assigned: {
+        type: Sequelize.BOOLEAN,
+      },
       tenant_id: {
         type: Sequelize.INTEGER,
       },
