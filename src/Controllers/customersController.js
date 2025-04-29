@@ -25,42 +25,49 @@ class CustomerController {
       return ResponseHandler.handleError(error, res);
     }
   }
-  static async bindMeter(req, res) {
-    const { meter: meterNumber, id: customer_id } = req.params;
-    const transaction = await customers.sequelize.transaction();
+  static async internalBindMeter(
+    meterNumber,
+    customer_id,
+    tenant_id,
+    transaction
+  ) {
     try {
       const customer = await customers
-        .scope({ method: ["system_supplier", req.tenant_id] })
+        .scope({ method: ["system_supplier", tenant_id] })
         .findByPk(customer_id, {
           include: [{ model: meters, as: "meters" }],
+          transaction,
         });
-
       if (!customer) {
-        return ResponseHandler.notFound(res, "cliente");
+        throw new Error("cliente não encontrado " + customer_id);
       }
 
       if (customer.meter_id !== null) {
-        return res.status(400).json({
-          error: `O cliente ${customer.name} já possui um contador associado.`,
-        });
+        throw new Error(
+          `O cliente ${customer.name} já possui um contador associado.`
+        );
       }
 
-      const meter = await meters.findOne({
-        where: { number: meterNumber },
-      });
+      const meter = await meters.findOne(
+        {
+          where: { number: meterNumber },
+        },
+        transaction
+      );
 
       if (!meter) {
-        return ResponseHandler.notFound(res, "Contador");
+        throw new Error("Contador não encontrado");
       }
 
-      const existingCustomerWithMeter = await customers.findOne({
-        where: { meter_id: meter.id },
-      });
+      const existingCustomerWithMeter = await customers.findOne(
+        {
+          where: { meter_id: meter.id },
+        },
+        transaction
+      );
 
       if (existingCustomerWithMeter) {
-        return res
-          .status(400)
-          .json({ error: "O contador já está associado a outro cliente." });
+        throw new Error("O contador já está associado a outro cliente.");
       }
       await Promise.all([
         customer.update({ meter_id: meter.id }, { transaction }),
@@ -69,9 +76,31 @@ class CustomerController {
 
       await customer.reload({ transaction });
 
-      await transaction.commit();
+      // await transaction.commit();
 
-      return ResponseHandler.success(res, customer);
+      return customer;
+    } catch (error) {
+      // await transaction.rollback();
+      throw error;
+    }
+  }
+  static async bindMeter(req, res) {
+    const { meter, id } = req.params;
+    const transaction = await customers.sequelize.transaction();
+    try {
+      result = await CustomerController.internalBindMeter(
+        req.body.meter,
+        id,
+        req.tenant_id,
+        transaction
+      );
+
+      await transaction.commit();
+      return ResponseHandler.success(
+        res,
+        result,
+        "Contador associado com sucesso"
+      );
     } catch (error) {
       await transaction.rollback();
       return ResponseHandler.handleError(
@@ -147,37 +176,41 @@ class CustomerController {
 
   // Criar novo cliente
   static async create(req, res) {
+    const transaction = await customers.sequelize.transaction();
     try {
       const allowedFields = {
         name: req.body.name,
         telephone: req.body.telephone,
         email: req.body.email,
         nuit: req.body.nuit,
+        gender: req.body.gender,
         address: req.body.address,
         lat: req.body.lat,
         lng: req.body.lng,
         status: req.body.status,
         whatsap: req.body.whatsap,
+        neighbourhood_id: req.body.neighbourhood_id,
         system_supplier_id: req.body.system_supplier_id,
-        tariff_type_id: req.tariff_type_id,
+        tariff_type_id: req.body.tariff_type_id,
       };
 
-      const newCustomer = await customers.create(allowedFields);
+      const newCustomer = await customers.create(allowedFields, {
+        transaction,
+      });
       if (req.body.meter) {
-        const fakeReq = {
-          ...req,
-          params: {
-            id: newCustomer.id,
-            meter: req.body.meter,
-          },
-        };
-
-        await this.bindMeter(fakeReq, res);
-
-        if (res.headersSent) return;
+        await CustomerController.internalBindMeter(
+          req.body.meter,
+          newCustomer.id,
+          req.tenant_id,
+          transaction
+        );
       }
-      return res.status(201).json(newCustomer);
+      await newCustomer.reload({ transaction });
+      await transaction.commit();
+
+      return ResponseHandler.success(res, newCustomer);
     } catch (error) {
+      await transaction.rollback();
       return ResponseHandler.handleError(
         error,
         res,
@@ -202,17 +235,22 @@ class CustomerController {
         email: req.body.email,
         meter_id: req.body.meter_id,
         nuit: req.body.nuit,
+        gender: req.body.gender,
         address: req.body.address,
         lat: req.body.lat,
         lng: req.body.lng,
         status: req.body.status,
         whatsap: req.body.whatsap,
+        neighbourhood_id: req.body.neighbourhood_id,
         system_supplier_id: req.body.system_supplier_id,
         tariff_type_id: req.tariff_type_id,
       };
 
       await customer.update(allowedFields);
-      ResponseHandler.success(res, await customers.findByPk(req.params.id));
+      return ResponseHandler.success(
+        res,
+        await customers.findByPk(req.params.id)
+      );
     } catch (error) {
       return ResponseHandler.handleError(
         error,

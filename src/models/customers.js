@@ -16,9 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   customers.init(
     {
-      barcode: {
+      code: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
       name: {
         type: DataTypes.STRING,
@@ -32,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
             msg: "O nome do cliente é obrigatório",
           },
           notNull: {
-            msg: "O nomedo cliente é obrigatório",
+            msg: "O nome do cliente é obrigatório",
           },
           len: {
             args: [3, 100],
@@ -144,6 +143,16 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "customers",
+      hooks: {
+        beforeCreate: async (customers) => {
+          if (!customers.id) {
+            const today = new Date();
+            const datePart = today.toISOString().slice(0, 10).replace(/-/g, "");
+            const lastId = (await customers.constructor.max("id")) || 0;
+            customers.code = `${datePart}${lastId + 1}`;
+          }
+        },
+      },
       scopes: {
         system_supplier(tenantId) {
           if (tenantId == null) {

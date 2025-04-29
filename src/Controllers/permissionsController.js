@@ -30,6 +30,7 @@ const loadControllerMethods = async () => {
   const ignoredFiles = [, "utils.js", "permissionsController - Copy.js"];
   const ignoredControllers = ["auth", "base", "provinces", "districts"];
   const ignoredMethods = [
+    "customers-internalBindMeter",
     "permissions-bulkImportPermissions",
     "permissions-loadControllerMethods",
   ];

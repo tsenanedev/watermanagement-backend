@@ -9,14 +9,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      barcode: {
+      code: {
         type: Sequelize.STRING(100),
         allowNull: false,
+        unique: true,
       },
       name: {
         type: Sequelize.STRING(100),
         allowNull: false,
-        unique: true,
       },
       telephone: {
         type: Sequelize.STRING,

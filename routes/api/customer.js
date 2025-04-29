@@ -245,8 +245,8 @@ router.post("/", jwtMW, (req, res, next) => {
   const status = req.body.status;
   const createdAt = new Date();
   const password = "123456";
-  const lat = req.body.lat
-  const lng = req.body.lng
+  const lat = req.body.lat;
+  const lng = req.body.lng;
 
   if (name != null && phone != null) {
     req.getConnection(function (err, conn) {
