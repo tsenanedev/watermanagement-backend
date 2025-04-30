@@ -137,13 +137,13 @@ router.post(
   hasPermission("customers-create"),
   customersController.create
 );
-router.get(
+router.post(
   "/customers/bind_meter/:id/:meter",
   authMiddleware,
   hasPermission("customers-bindMeter"),
   customersController.bindMeter
 );
-router.get(
+router.post(
   "/customers/unbind_meter/:id/",
   authMiddleware,
   hasPermission("customers-unbindMeter"),

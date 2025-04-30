@@ -39,7 +39,7 @@ class CustomerController {
           transaction,
         });
       if (!customer) {
-        throw new Error("cliente não encontrado " + customer_id);
+        throw new Error("cliente não encontrado.");
       }
 
       if (customer.meter_id !== null) {
@@ -88,8 +88,8 @@ class CustomerController {
     const { meter, id } = req.params;
     const transaction = await customers.sequelize.transaction();
     try {
-      result = await CustomerController.internalBindMeter(
-        req.body.meter,
+      const result = await CustomerController.internalBindMeter(
+        meter,
         id,
         req.tenant_id,
         transaction
