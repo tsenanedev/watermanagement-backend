@@ -17,6 +17,7 @@ const authMiddleware = require("../../src/middlewares/authMiddleware");
 const metersController = require("../../src/Controllers/metersController");
 const districtsController = require("../../src/Controllers/districtsController");
 const customersController = require("../../src/Controllers/customersController");
+const readingsController = require("../../src/Controllers/readingsController");
 const jwtToken = require("./jwtController");
 
 const users = require("./users");
@@ -129,7 +130,13 @@ router.delete(
   hasPermission("roles-delete"),
   rolesController.delete
 );
-
+// CRUD Readings
+router.get(
+  "/readings",
+  authMiddleware,
+  hasPermission("readings-index"),
+  readingsController.index
+);
 // CRUD Customer
 router.post(
   "/customers",
