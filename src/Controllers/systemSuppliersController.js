@@ -5,7 +5,7 @@ const {
   operators,
 } = require("../models");
 
-const ResponseHandler = require("./baseController");
+const ResponseHandler = require("../utils/ResponseHandler");
 
 class systemSuppliersController {
   static async index(req, res) {

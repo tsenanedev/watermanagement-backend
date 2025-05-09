@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 30, 2025 at 10:48 PM
+-- Generation Time: May 10, 2025 at 12:04 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -364,7 +364,7 @@ INSERT INTO `customers` (`id`, `code`, `name`, `telephone`, `email`, `tenant_id`
 (1155, '20200900817', 'Calado Antonio Mapandzene', '', 'calado@gmail.com', NULL, '3963328', NULL, 'Tsenane - Funhalouro', NULL, NULL, '1', '0', '2021-08-30 06:36:27', NULL, NULL, 2, 5, 1),
 (1165, '20200900356', 'Calado Reginaldo Sambula Sambo', '', '', NULL, '121468621', NULL, 'Tsenane - Funhalouro', NULL, NULL, '1', '0', '2021-08-30 06:39:03', NULL, NULL, 2, 5, 1),
 (1175, '20200900075', 'Carlitos Gavice', '', 'carlitos@gmail.com', NULL, '7023857', NULL, 'Tsenane - Funhalouro', NULL, NULL, '1', '0', '2021-08-30 06:41:49', NULL, NULL, 2, 5, 1),
-(1205, '20200901037', 'Carlos Alexandre Sitoe', '', '', NULL, '104497047', NULL, 'Tsenane - Funhalouro', NULL, NULL, '1', '0', '2021-08-30 06:47:56', '2025-04-30 18:35:22', 7168, 2, 5, 1),
+(1205, '20200901037', 'Carlos Alexandre Sitoe', '', '', NULL, '104497047', NULL, 'Tsenane - Funhalouro', NULL, NULL, '1', '0', '2021-08-30 06:47:56', '2025-04-30 18:35:22', 7168, 2, 1, 1),
 (1253, '202504291206', 'bilton', '843783137', 'bilton@bim.com', NULL, '1111111', 'Masculino', 'funhalouro', NULL, NULL, '1', NULL, '2025-04-29 19:42:02', '2025-04-29 19:42:02', 5165, 2, 5, 1);
 
 -- --------------------------------------------------------
@@ -2082,6 +2082,47 @@ INSERT INTO `districts` (`id`, `name`, `province_id`, `createdAt`, `updatedAt`) 
 (159, 'KaMubukwana', 1, '2025-04-10 18:32:36', NULL),
 (160, 'KaTembe', 1, '2025-04-10 18:32:36', NULL),
 (161, 'KaNyaka', 1, '2025-04-10 18:32:36', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `invoces`
+--
+
+CREATE TABLE `invoces` (
+  `id` int(11) NOT NULL,
+  `amount` decimal(8,2) DEFAULT NULL,
+  `due_date` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `reading_id` int(11) DEFAULT NULL,
+  `tenant_id` int(11) DEFAULT NULL,
+  `billing_date` datetime DEFAULT NULL,
+  `availabilityFee` decimal(10,2) DEFAULT NULL,
+  `vat` decimal(10,2) DEFAULT NULL,
+  `excessiveFee` decimal(10,2) DEFAULT NULL,
+  `total` decimal(10,2) DEFAULT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `invoice_items`
+--
+
+CREATE TABLE `invoice_items` (
+  `id` int(11) NOT NULL,
+  `invoice_id` int(11) NOT NULL,
+  `level_name` varchar(255) DEFAULT NULL,
+  `consumption_from` int(11) DEFAULT NULL,
+  `consumption_to` int(11) DEFAULT NULL,
+  `units_consumed` decimal(10,2) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `subtotal` decimal(10,2) DEFAULT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -14483,7 +14524,7 @@ CREATE TABLE `readings` (
 --
 
 INSERT INTO `readings` (`id`, `meter_id`, `current`, `consumption`, `last`, `forfeit`, `reading_date`, `status`, `staffName`, `photo_url`, `createdAt`, `updatedAt`, `createdby_id`, `updatedby_id`, `tenant_id`) VALUES
-(1, 165, 1500, 100, 1400, NULL, '2025-04-30 22:24:37', 'approved', NULL, NULL, '2025-04-30 22:24:37', NULL, 1, NULL, 5),
+(1, 7168, 1500, 15.1, 1400, NULL, '2025-04-30 22:24:37', 'approved', NULL, NULL, '2025-04-30 22:24:37', NULL, 1, NULL, 5),
 (2, 175, 1630, 130, 1500, NULL, '2025-04-30 22:24:37', 'approved', NULL, NULL, '2025-04-30 22:24:37', NULL, 1, NULL, 5),
 (3, 195, 1785, 155, 1630, NULL, '2025-04-30 22:24:37', 'approved', NULL, NULL, '2025-04-30 22:24:37', NULL, 1, NULL, 5),
 (4, 205, 1920, 135, 1785, NULL, '2025-04-30 22:24:37', 'approved', NULL, NULL, '2025-04-30 22:24:37', NULL, 1, NULL, 5),
@@ -14495,7 +14536,7 @@ INSERT INTO `readings` (`id`, `meter_id`, `current`, `consumption`, `last`, `for
 (10, 285, 2700, 120, 2580, NULL, '2025-04-30 22:24:37', 'approved', NULL, NULL, '2025-04-30 22:24:37', NULL, 1, NULL, 5),
 (11, 295, 3100, 150, 2950, NULL, '2025-04-30 22:24:37', 'pending', NULL, NULL, '2025-04-30 22:24:37', NULL, 1, NULL, 1),
 (12, 305, 3250, 150, 3100, NULL, '2025-04-30 22:24:37', 'pending', NULL, NULL, '2025-04-30 22:24:37', NULL, 1, NULL, 1),
-(13, 315, 3400, 150, 3250, NULL, '2025-04-30 22:24:37', 'pending', NULL, NULL, '2025-04-30 22:24:37', NULL, 1, NULL, 1),
+(13, 315, 3400, 150, 3250, NULL, '2025-04-30 22:24:37', 'approved', NULL, NULL, '2025-04-30 22:24:37', '2025-05-03 20:16:09', 1, 1, 1),
 (14, 335, 3550, 150, 3400, NULL, '2025-04-30 22:24:37', 'pending', NULL, NULL, '2025-04-30 22:24:37', NULL, 1, NULL, 1),
 (15, 345, 3700, 150, 3550, NULL, '2025-04-30 22:24:37', 'pending', NULL, NULL, '2025-04-30 22:24:37', NULL, 1, NULL, 1),
 (16, 355, 3850, 150, 3700, NULL, '2025-04-30 22:24:37', 'pending', NULL, NULL, '2025-04-30 22:24:37', NULL, 1, NULL, 1),
@@ -14634,6 +14675,7 @@ INSERT INTO `roles_has_permissions` (`role_id`, `permission_id`, `createdAt`, `u
 (1, 436, NULL, NULL),
 (1, 437, NULL, NULL),
 (1, 438, NULL, NULL),
+(1, 439, NULL, NULL),
 (11, 362, '2025-04-07 17:04:38', '2025-04-07 17:04:38'),
 (11, 363, '2025-04-07 17:04:38', '2025-04-07 17:04:38'),
 (11, 364, '2025-04-07 17:04:38', '2025-04-07 17:04:38'),
@@ -14672,7 +14714,10 @@ INSERT INTO `sequelizemeta` (`name`) VALUES
 ('20250418174251-create-tariff-types.js'),
 ('20250418174956-create-tariffs.js'),
 ('20250418174957-create-customers.js'),
-('20250430194407-create-readings.js');
+('20250430194407-create-readings.js'),
+('20250503195316-create-invoces.js'),
+('20250507203217-create-invoice-items.js'),
+('20250509171435-create-taxs.js');
 
 -- --------------------------------------------------------
 
@@ -14733,12 +14778,13 @@ CREATE TABLE `tariffs` (
   `tariff_type_id` int(11) NOT NULL,
   `level_name` varchar(255) NOT NULL,
   `consumption_from` int(11) NOT NULL,
-  `consumption_to` int(11) NOT NULL,
+  `consumption_to` int(11) DEFAULT NULL,
   `price` decimal(10,2) DEFAULT NULL,
   `unit_type` varchar(255) DEFAULT NULL,
   `availability_fee` decimal(10,2) DEFAULT NULL,
   `valid_from` date NOT NULL,
   `valid_to` date DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -14747,8 +14793,12 @@ CREATE TABLE `tariffs` (
 -- Dumping data for table `tariffs`
 --
 
-INSERT INTO `tariffs` (`id`, `system_supplier_id`, `tariff_type_id`, `level_name`, `consumption_from`, `consumption_to`, `price`, `unit_type`, `availability_fee`, `valid_from`, `valid_to`, `createdAt`, `updatedAt`) VALUES
-(1, 1, 2, '1º Escalão', 0, 5, 32.51, 'm3', 81.00, '2025-04-01', '0000-00-00', '2025-04-22 20:52:22', NULL);
+INSERT INTO `tariffs` (`id`, `system_supplier_id`, `tariff_type_id`, `level_name`, `consumption_from`, `consumption_to`, `price`, `unit_type`, `availability_fee`, `valid_from`, `valid_to`, `is_active`, `createdAt`, `updatedAt`) VALUES
+(1, 1, 2, '1º Escalão', 0, 5, 34.45, 'm3', 81.00, '2025-04-01', NULL, 1, '2025-04-22 20:52:22', NULL),
+(2, 1, 6, '1º Escalão', 0, 15, 68.26, 'm3', 81.00, '2025-05-01', '0000-00-00', 1, '2025-05-05 21:24:06', NULL),
+(3, 1, 4, '2º Escalão', 15, NULL, 68.26, 'm3', 81.00, '2025-04-01', NULL, 1, '2025-05-05 21:27:28', NULL),
+(4, 1, 2, '2º Escalão', 5, 7, 36.70, 'm3', 81.00, '2025-05-01', NULL, 1, '2025-05-05 21:30:25', NULL),
+(5, 1, 2, '3º Escalão', 7, NULL, 68.26, 'm3', 81.00, '2025-04-01', NULL, 1, '2025-05-05 21:43:08', NULL);
 
 -- --------------------------------------------------------
 
@@ -14767,12 +14817,39 @@ CREATE TABLE `tarrif_types` (
 
 INSERT INTO `tarrif_types` (`id`, `name`) VALUES
 (1, 'Fontenária'),
-(2, 'Doméstica'),
+(2, 'Doméstico'),
 (3, 'Municipal'),
 (4, 'Comercial'),
 (5, 'Público'),
 (6, 'Industrial'),
 (7, 'Toma de Água');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `taxs`
+--
+
+CREATE TABLE `taxs` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `tax_type` varchar(255) DEFAULT NULL,
+  `value` float DEFAULT NULL,
+  `calculation_type` varchar(255) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `operation` varchar(255) DEFAULT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Dumping data for table `taxs`
+--
+
+INSERT INTO `taxs` (`id`, `name`, `tax_type`, `value`, `calculation_type`, `is_active`, `description`, `operation`, `createdAt`, `updatedAt`) VALUES
+(3, 'IVA', 'IVA', 17, 'PERCENTAGEM', 1, 'Imposto sobre Valor Acrescentado', 'INCREMENTO', '2025-05-09 21:38:36', '2025-05-09 21:38:36'),
+(4, 'Dedução da Divida', 'DEDUCAO_DIVIDA', 50, 'PERCENTAGEM', 0, 'Dedução por pagamento antecipado', 'DEDUCAO', '2025-05-09 21:38:36', '2025-05-09 21:38:36');
 
 -- --------------------------------------------------------
 
@@ -14968,6 +15045,19 @@ ALTER TABLE `districts`
   ADD UNIQUE KEY `nome` (`name`);
 
 --
+-- Indexes for table `invoces`
+--
+ALTER TABLE `invoces`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `invoice_items`
+--
+ALTER TABLE `invoice_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `invoice_id` (`invoice_id`);
+
+--
 -- Indexes for table `meters`
 --
 ALTER TABLE `meters`
@@ -15106,6 +15196,12 @@ ALTER TABLE `tarrif_types`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `taxs`
+--
+ALTER TABLE `taxs`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -15195,6 +15291,18 @@ ALTER TABLE `debts`
 --
 ALTER TABLE `districts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
+
+--
+-- AUTO_INCREMENT for table `invoces`
+--
+ALTER TABLE `invoces`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `invoice_items`
+--
+ALTER TABLE `invoice_items`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `meters`
@@ -15290,13 +15398,19 @@ ALTER TABLE `system_suppliers`
 -- AUTO_INCREMENT for table `tariffs`
 --
 ALTER TABLE `tariffs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tarrif_types`
 --
 ALTER TABLE `tarrif_types`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `taxs`
+--
+ALTER TABLE `taxs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -15341,6 +15455,12 @@ ALTER TABLE `customers`
   ADD CONSTRAINT `customers_ibfk_2` FOREIGN KEY (`tariff_type_id`) REFERENCES `tarrif_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `customers_ibfk_3` FOREIGN KEY (`system_supplier_id`) REFERENCES `system_suppliers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `customers_ibfk_4` FOREIGN KEY (`neighbourhood_id`) REFERENCES `neighbourhoods` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `invoice_items`
+--
+ALTER TABLE `invoice_items`
+  ADD CONSTRAINT `invoice_items_ibfk_1` FOREIGN KEY (`invoice_id`) REFERENCES `invoces` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `neighbourhoods`

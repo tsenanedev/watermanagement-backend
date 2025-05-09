@@ -1,4 +1,4 @@
-const ResponseHandler = require("./baseController");
+const ResponseHandler = require("../utils/ResponseHandler");
 const { readings, meters } = require("../models");
 const { Op } = require("sequelize");
 
@@ -84,7 +84,7 @@ class readingsController {
       const { status, forfeit } = req.body;
 
       const reading = await readings.findByPk(id);
-      if (!reading) throw new Error("Leitura não encontrada");
+      if (!reading) return ResponseHandler.notFound("Leitura");
 
       const updates = {
         status,
@@ -93,6 +93,20 @@ class readingsController {
 
       if (forfeit !== undefined) {
         updates.forfeit = forfeit;
+      }
+      const validStatusTransitions = {
+        pending: ["approved", "rejected"], // Estados permitidos a partir de pending
+        approved: ["billed"], // Permite transição para billed após aprovação
+        rejected: ["pending"],
+        billed: [], // Não permite nenhuma alteração após faturação
+      };
+
+      if (!validStatusTransitions[reading.status].includes(status)) {
+        console.log(status);
+        return ResponseHandler.badRequest(
+          res,
+          `Não é possível realizar a transição do estado ${reading.status} para ${status}`
+        );
       }
 
       await reading.update(updates);

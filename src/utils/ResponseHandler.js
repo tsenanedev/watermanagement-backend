@@ -5,10 +5,21 @@ const {
   DatabaseError,
   TimeoutError,
 } = require("sequelize");
-
+const DomainError = require("./errors/DomainError");
 class ResponseHandler {
   // Tratamento centralizado de erros
   static handleError(error, res, customMessage = "Erro na operação") {
+    // Tratamento de erros de personalizados
+    if (error instanceof DomainError) {
+      return res.status(error.status).json({
+        success: false,
+        error: {
+          type: error.code,
+          message: error.message,
+          ...(Object.keys(error.extra).length && { detalhes: error.extra }),
+        },
+      });
+    }
     // Tratamento de erros de validação
     if (error instanceof ValidationError) {
       return res.status(400).json({

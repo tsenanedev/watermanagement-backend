@@ -1,5 +1,5 @@
 const { meters } = require("../models");
-const ResponseHandler = require("./baseController");
+const ResponseHandler = require("../utils/ResponseHandler");
 
 // Listar todos os meteres
 exports.index = async (req, res) => {

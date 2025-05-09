@@ -1,5 +1,12 @@
 const { customers, meters } = require("../models");
-const ResponseHandler = require("./baseController");
+const ResponseHandler = require("../utils/ResponseHandler");
+const {
+  clientAlreadyHasMeter,
+  meterInUseByAnotherClient,
+  meterNotFound,
+} = require("../utils/errors/MetersErrors");
+const { customerNotFound } = require("../utils/errors/CustomrsErrors");
+
 class CustomerController {
   static async index(req, res) {
     try {
@@ -39,11 +46,11 @@ class CustomerController {
           transaction,
         });
       if (!customer) {
-        throw new Error("cliente não encontrado.");
+        throw customerNotFound("cliente não encontrado.");
       }
 
       if (customer.meter_id !== null) {
-        throw new Error(
+        throw clientAlreadyHasMeter(
           `O cliente ${customer.name} já possui um contador associado.`
         );
       }
@@ -56,7 +63,7 @@ class CustomerController {
       );
 
       if (!meter) {
-        throw new Error("Contador não encontrado");
+        throw meterNotFound("Contador não encontrado");
       }
 
       const existingCustomerWithMeter = await customers.findOne(
@@ -67,7 +74,9 @@ class CustomerController {
       );
 
       if (existingCustomerWithMeter) {
-        throw new Error("O contador já está associado a outro cliente.");
+        throw meterInUseByAnotherClient(
+          "O contador já está associado a outro cliente."
+        );
       }
       await Promise.all([
         customer.update({ meter_id: meter.id }, { transaction }),

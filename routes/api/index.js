@@ -18,6 +18,7 @@ const metersController = require("../../src/Controllers/metersController");
 const districtsController = require("../../src/Controllers/districtsController");
 const customersController = require("../../src/Controllers/customersController");
 const readingsController = require("../../src/Controllers/readingsController");
+const invoicesController = require("../../src/Controllers/invoicesController");
 const jwtToken = require("./jwtController");
 
 const users = require("./users");
@@ -130,12 +131,32 @@ router.delete(
   hasPermission("roles-delete"),
   rolesController.delete
 );
+
+router.post("/invoices/", invoicesController.create);
 // CRUD Readings
+router.put(
+  "/readings/:id",
+  authMiddleware,
+  hasPermission("readings-updateStatus"),
+  readingsController.updateStatus
+);
+router.get(
+  "/readings/getReadings",
+  authMiddleware,
+  hasPermission("readings-getReadings"),
+  readingsController.getReadings
+);
 router.get(
   "/readings",
   authMiddleware,
   hasPermission("readings-index"),
   readingsController.index
+);
+router.post(
+  "/readings",
+  authMiddleware,
+  hasPermission("readings-create"),
+  readingsController.create
 );
 // CRUD Customer
 router.post(

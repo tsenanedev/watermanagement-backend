@@ -40,6 +40,10 @@ module.exports = {
       },
       valid_to: {
         type: Sequelize.DATEONLY,
+        allowNull: true,
+      },
+      is_active: {
+        type: Sequelize.BOOLEAN,
       },
       system_supplier_id: {
         type: Sequelize.INTEGER,

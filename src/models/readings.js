@@ -20,12 +20,15 @@ module.exports = (sequelize, DataTypes) => {
 
       readings.belongsTo(models.meters, {
         foreignKey: "meter_id",
-        as: "meter",
+        as: "meters",
       });
     }
   }
   readings.init(
     {
+      meter_id: {
+        type: DataTypes.INTEGER,
+      },
       current: {
         type: DataTypes.FLOAT,
         allowNull: false,
@@ -67,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: "pending",
         validate: {
           isIn: {
-            args: [["pending", "approved", "rejected"]],
+            args: [["pending", "billed", "approved", "rejected"]],
             msg: "Status inválido",
           },
         },
@@ -84,6 +87,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
+
       createdby_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
